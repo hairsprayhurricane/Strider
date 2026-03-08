@@ -67,5 +67,8 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Strider.slnx"
+    "dotnet.defaultSolution": "Strider.slnx",
+    "cSpell.words": [
+        "Unmaker"
+    ]
 }

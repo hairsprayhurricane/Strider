@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5f;
     public float moveSpeedDeBuff = 0;
     public float mouseSensitivity = 500f;
+    public bool isWalking;
     public bool canRun = true;
     public bool isRunning;
     private CharacterController characterController;
@@ -16,9 +17,7 @@ public class PlayerController : MonoBehaviour
     public float yRecoilOffset = 0f;
     private Vector3 velocity;
     private bool isGrounded;
-    private Animator camAnim;
 
-    public bool isWalking;
     private Coroutine walkCor;
     private const float timeBetweenSteps = 0.65f;
     public AudioClip stepSoundClip;
@@ -58,7 +57,6 @@ public class PlayerController : MonoBehaviour
     {
         Time.timeScale = 1f;
         characterController = GetComponent<CharacterController>();
-        camAnim = Camera.main != null ? Camera.main.GetComponent<Animator>() : null;
         audioSource = GetComponent<AudioSource>();
         //Cursor.lockState = CursorLockMode.Locked;
 
@@ -117,7 +115,6 @@ public class PlayerController : MonoBehaviour
         if (isNoClipOn)
         {
             NoClipMove();
-            if (camAnim) camAnim.SetBool("isWalking", false);
             isWalking = false;
             return;
         }
@@ -169,7 +166,6 @@ public class PlayerController : MonoBehaviour
                 characterController.Move(velocity * Time.deltaTime);
             }
 
-            if (camAnim) camAnim.SetBool("isWalking", isWalking);
         }
     }
 
@@ -208,6 +204,32 @@ public class PlayerController : MonoBehaviour
 
         xRecoilOffset = targetX;
         yRecoilOffset = targetY;
+    }
+
+    public void ShakeCamera(float duration = 0.5f, float magnitude = 3f)
+    {
+        Instance.StartCoroutine(ShakeCoroutine(duration, magnitude));
+    }
+
+    private IEnumerator ShakeCoroutine(float duration, float magnitude)
+    {
+        Vector3 originalPosition = Camera.main.transform.localPosition;
+        float elapsed = 0.0f;
+
+        float noiseX = Random.Range(0f, 100f);
+        float noiseY = Random.Range(0f, 100f);
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float x = (Mathf.PerlinNoise(noiseX, elapsed * 10f) - 0.5f) * magnitude;
+            float y = (Mathf.PerlinNoise(noiseY, elapsed * 10f) - 0.5f) * magnitude;
+
+            Camera.main.transform.localPosition = originalPosition + new Vector3(x, y, 0);
+            yield return null;
+        }
+
+        Camera.main.transform.localPosition = originalPosition;
     }
 
     public void ChangePosition(Vector3 position)
