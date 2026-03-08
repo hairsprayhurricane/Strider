@@ -150,8 +150,8 @@ MonoBehaviour:
   damage: 30
   range: 100
   fireRate: 0.75
-  bulletSpread: 15
-  mainProjectilePrefab: {fileID: 3755346310232537546, guid: f7262e2279efcf44795287d5d78a5213, type: 3}
+  bulletSpread: 5
+  mainProjectilePrefab: {fileID: 3755346310232537546, guid: d66dd3a96eebb5244b0880030e8b3087, type: 3}
   isInfiniteAmmo: 0
   shotSound: {fileID: 0}
   noAmmoSound: {fileID: 0}

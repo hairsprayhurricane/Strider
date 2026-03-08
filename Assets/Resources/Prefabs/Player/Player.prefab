@@ -74,6 +74,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GunData
   playerPistolPrefab: {fileID: 158076827664837424, guid: b65efa29dcaada84599efd7d56169679, type: 3}
+  shotgunPrefab: {fileID: 1202528496030385891, guid: b19d9c40f0e537846ab0ca057e89f0ec, type: 3}
+  machineGunPrefab: {fileID: 250554764976023612, guid: 46ba35c6557be3e4390e5538969a527d, type: 3}
+  rocketLauncherPrefab: {fileID: -3669883938409183225, guid: 0ae7874d29099df4aac85a47fdbb53ac, type: 3}
+  plasmaGunPrefab: {fileID: 0}
+  bfgPrefab: {fileID: 0}
+  unmakerPrefab: {fileID: 0}
 --- !u!114 &9119404945859127563
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101,9 +107,10 @@ GameObject:
   - component: {fileID: 9070041454772133311}
   - component: {fileID: 3512834731912426470}
   - component: {fileID: 2992297669358819594}
+  - component: {fileID: 1642792127213981550}
   m_Layer: 0
   m_Name: Collider
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -243,7 +250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   heavyGravity: -100
-  moveSpeed: 5
+  moveSpeed: 10
   moveSpeedDeBuff: 0
   mouseSensitivity: 500
   isWalking: 0
@@ -255,6 +262,7 @@ MonoBehaviour:
   cameraOffset: {x: 0, y: 20, z: -20}
   cameraFollowSpeed: 1
   cameraTiltX: 45
+  playerHealth: {fileID: 1642792127213981550}
 --- !u!143 &2992297669358819594
 CharacterController:
   m_ObjectHideFlags: 0
@@ -280,6 +288,31 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1642792127213981550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4420320867310770973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4120d98dc75ce6b42b4ce6d3166188e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  playerController: {fileID: 3512834731912426470}
+  maxHealth: 100
+  health: 100
+  maxArmor: 0
+  armor: 0
+  maxHealthInjectors: 0
+  healthInjectors: 0
+  injectorLeftValue: 0
+  deathSound: {fileID: 0}
+  synthPuddle: {fileID: 0}
+  isDead: 0
+  isGod: 0
+  isUsingInjector: 0
 --- !u!1 &7032089119408612586
 GameObject:
   m_ObjectHideFlags: 0

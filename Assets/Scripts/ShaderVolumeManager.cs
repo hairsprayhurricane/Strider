@@ -119,6 +119,27 @@ public class ShaderVolumeManager : MonoBehaviour
         Color lerpedColor = Color.Lerp(Color.red, Color.black, t);
         vignette.color.value = lerpedColor;
     }
+    public void SetColorAdjustmentColorByValue(int value)
+    {
+        if (colorAdjustments == null)
+        {
+            Start();
+        }
+        value = Mathf.Clamp(value, 0, 100);
+        float t = value / 100f;
+        Color lerpedColor = Color.Lerp(Color.red, colorAdjustmentsDefaultColor, t);
+        colorAdjustments.colorFilter.value = lerpedColor;
+    }
+    public void SetFilmGrainByValue(int value)
+    {
+        if (filmGrain == null)
+        {
+            Start();
+        }
+        value = Mathf.Clamp(value, 0, 100);
+        float t = value / 100f;
+        filmGrain.intensity.value = Mathf.Lerp(1f, 0f, t);
+    }
 
     public IEnumerator DramaticallyIncreaseGain(float force = 5f)
     {
@@ -276,6 +297,24 @@ public class ShaderVolumeManager : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         distortion.intensity.value = distortionDefaultIntensity;
+    }
+    public IEnumerator DramaticallyIncreaseAndStopDistortion(float maxIntensity = 0.5f)
+    {
+        if (distortion == null)
+        {
+            Start();
+        }
+        
+        distortion.intensity.overrideState = true;
+
+        float currentIntensity = distortion.intensity.value;
+        while (currentIntensity < maxIntensity)
+        {
+            currentIntensity += 0.01f;
+            distortion.intensity.value = currentIntensity;
+            yield return new WaitForSeconds(0.01f);
+        }
+        //distortion.intensity.value = distortionDefaultIntensity;
     }
 
     public IEnumerator DramaticallyIncreaseDistortion(int damage)

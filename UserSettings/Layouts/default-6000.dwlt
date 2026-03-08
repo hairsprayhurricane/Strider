@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 2560
     height: 1349
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Console
   m_RootView: {fileID: 6}
   m_MinSize: {x: 875, y: 321}
   m_MaxSize: {x: 10000, y: 10000}
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 112}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 100
+  controlID: 43
   draggingID: 0
 --- !u!114 &3
 MonoBehaviour:
@@ -96,8 +96,8 @@ MonoBehaviour:
     y: 0
     width: 323
     height: 881
-  m_MinSize: {x: 201, y: 226}
-  m_MaxSize: {x: 4001, y: 4026}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 19}
   m_Panes:
   - {fileID: 19}
@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ProjectBrowser
+  m_Name: ConsoleWindow
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -122,15 +122,15 @@ MonoBehaviour:
     y: 881
     width: 1939
     height: 412
-  m_MinSize: {x: 230, y: 250}
-  m_MaxSize: {x: 10000, y: 10000}
-  m_ActualView: {fileID: 17}
+  m_MinSize: {x: 101, y: 126}
+  m_MaxSize: {x: 4001, y: 4026}
+  m_ActualView: {fileID: 21}
   m_Panes:
   - {fileID: 17}
   - {fileID: 21}
   - {fileID: 15}
-  m_Selected: 0
-  m_LastSelected: 1
+  m_Selected: 1
+  m_LastSelected: 0
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -226,7 +226,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 112}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 47
+  controlID: 44
   draggingID: 0
 --- !u!114 &10
 MonoBehaviour:
@@ -252,7 +252,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 56}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 48
+  controlID: 45
   draggingID: 0
 --- !u!114 &11
 MonoBehaviour:
@@ -879,7 +879,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Materials/FX
+    - Assets/Scripts/Projectiles
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -889,32 +889,32 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 85
   m_LastFolders:
-  - Assets/Materials/FX
+  - Assets/Scripts/Projectiles
   m_LastFoldersGridSize: 85
   m_LastProjectPath: C:\Users\trued\source\repos\Strider
   m_LockTracker:
     m_IsLocked: 0
   m_LastLocalAssetsSearchArea: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 0}
+    scrollPos: {x: 0, y: 50}
     m_SelectedIDs:
-    - m_Data: 46702
+    - m_Data: 46778
     m_LastClickedID:
-      m_Data: 46702
+      m_Data: 46778
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 46526
-    - m_Data: 46528
-    - m_Data: 46530
-    - m_Data: 46532
-    - m_Data: 46534
-    - m_Data: 46536
-    - m_Data: 46538
-    - m_Data: 46658
-    - m_Data: 46662
-    - m_Data: 46664
-    - m_Data: 46666
-    - m_Data: 46682
+    - m_Data: 46562
+    - m_Data: 46564
+    - m_Data: 46566
+    - m_Data: 46568
+    - m_Data: 46570
+    - m_Data: 46572
+    - m_Data: 46574
+    - m_Data: 46750
+    - m_Data: 46754
+    - m_Data: 46788
+    - m_Data: 46924
+    - m_Data: 53502
     - m_Data: 1000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -948,13 +948,14 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 46526
-    - m_Data: 46528
-    - m_Data: 46530
-    - m_Data: 46532
-    - m_Data: 46534
-    - m_Data: 46536
-    - m_Data: 46538
+    - m_Data: 46562
+    - m_Data: 46564
+    - m_Data: 46566
+    - m_Data: 46568
+    - m_Data: 46570
+    - m_Data: 46572
+    - m_Data: 46574
+    - m_Data: 46576
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -982,8 +983,8 @@ MonoBehaviour:
       m_ResourceFile: 
   m_ListAreaState:
     m_SelectedInstanceIDs:
-    - m_Data: 45596
-    m_LastClickedInstanceID: 45596
+    - m_Data: 46208
+    m_LastClickedInstanceID: 46208
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs:
     - m_Data: 77780
@@ -1066,7 +1067,7 @@ MonoBehaviour:
     m_CachedPref: 160
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
-  m_LastInspectedObjectInstanceID: 45596
+  m_LastInspectedObjectInstanceID: -1
   m_LastVerticalScrollValue: 0
   m_GlobalObjectId: 
   m_InspectorMode: 0
@@ -1115,18 +1116,20 @@ MonoBehaviour:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs:
-      - m_Data: 45596
+      - m_Data: 46208
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -1316
-      - m_Data: -1310
+      - m_Data: -6728
+      - m_Data: -6688
+      - m_Data: -6682
+      - m_Data: -1304
+      - m_Data: -1298
       - m_Data: -1296
-      - m_Data: 46042
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: Player
+        m_OriginalName: Player
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
@@ -1134,10 +1137,10 @@ MonoBehaviour:
           width: 0
           height: 0
         m_UserData:
-          m_Data: 0
+          m_Data: -1298
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_TrimLeadingAndTrailingWhitespace: 0
         m_ClientGUIView: {fileID: 4}
@@ -1771,9 +1774,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -5.912201, y: -8.153944, z: 16.022667}
+    m_Target: {x: -20.604534, y: -5.672153, z: -10.049924}
     speed: 2
-    m_Value: {x: -5.912201, y: -8.153944, z: 16.022667}
+    m_Value: {x: -20.604534, y: -5.672153, z: -10.049924}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1819,13 +1822,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.24670106, y: 0.016567908, z: -0.0042178608, w: -0.9689481}
+    m_Target: {x: -0.25067344, y: -0.49478042, z: 0.15160637, w: -0.8181656}
     speed: 2
-    m_Value: {x: -0.24669933, y: 0.01656779, z: -0.004217831, w: -0.96894133}
+    m_Value: {x: -0.2506704, y: -0.4947744, z: 0.15160452, w: -0.81815565}
   m_Size:
-    m_Target: 34.821022
+    m_Target: 23.604504
     speed: 2
-    m_Value: 34.821022
+    m_Value: 23.604504
   m_Ortho:
     m_Target: 0
     speed: 2

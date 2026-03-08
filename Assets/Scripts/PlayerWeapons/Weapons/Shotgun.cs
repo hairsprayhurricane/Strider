@@ -9,7 +9,7 @@ public class Shotgun : PlayerGun
         baseDir.y = 0f;
         baseDir.Normalize();
 
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < 14; i++)
         {
             GameObject bulletObj = Instantiate(mainProjectilePrefab, spawnPos, Quaternion.identity);
 

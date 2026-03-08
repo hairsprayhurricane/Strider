@@ -31,17 +31,25 @@ public class PlayerController : MonoBehaviour
     private static int noClipLayer = -1;
     private static int prevLayer = -1;
     private float noClipSpeedMultiplier = 10f;
-    //private float noClipVerticalSpeedMultiplier = 1.0f;
 
     [Header("Top-Down Camera")]
     public Vector3 cameraOffset = new Vector3(0f, 20f, -8f);
     public float cameraFollowSpeed = 8f;
     public float cameraTiltX = 55f;
 
+    [Header("RMB Camera Peek")]
+    public float peekFollowSpeed = 5f;
+    public float peekReturnSpeed = 8f;
+    public float maxPeekDistance = 30f;
+
+    public bool isPeeking = false;
+    private Vector3 peekOffset = Vector3.zero;
+
     private GameObject rayObject;
     private LineRenderer rayLine;
 
-    // === Singleton ===
+    public PlayerHealth playerHealth;
+
     private static PlayerController _instance;
     public static PlayerController Instance { get { return _instance; } }
 
@@ -58,37 +66,73 @@ public class PlayerController : MonoBehaviour
         Time.timeScale = 1f;
         characterController = GetComponent<CharacterController>();
         audioSource = GetComponent<AudioSource>();
-        //Cursor.lockState = CursorLockMode.Locked;
 
         Camera.main.transform.position = transform.position + cameraOffset;
         Camera.main.transform.rotation = Quaternion.Euler(cameraTiltX, 0f, 0f);
-        
     }
 
     void Update()
     {
+        if (playerHealth.isDead) 
+        {
+            UpdatePeekOffset();
+            return;
+        }
+
         if (canRun && Input.GetKey(KeyCode.LeftShift))
             isRunning = true;
         else if (!Input.GetKey(KeyCode.LeftShift))
             isRunning = false;
 
         Move();
-
+        isPeeking = Input.GetMouseButton(1);
+        UpdatePeekOffset();
         DrawRay(transform.position, transform.forward * 10);
     }
 
     void LateUpdate()
     {
-        if (Camera.main == null) return;
+        Vector3 baseTarget = transform.position + cameraOffset;
+        Vector3 targetPos = baseTarget + peekOffset;
 
-        Vector3 targetPos = transform.position + cameraOffset;
+        float speed = isPeeking ? peekFollowSpeed : peekReturnSpeed;
+
         Camera.main.transform.position = Vector3.Lerp(
             Camera.main.transform.position,
             targetPos,
-            cameraFollowSpeed * Time.deltaTime
+            speed * Time.deltaTime
         );
 
         Camera.main.transform.rotation = Quaternion.Euler(cameraTiltX, 0f, 0f);
+    }
+
+    void UpdatePeekOffset()
+    {
+
+        if (isPeeking)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Plane groundPlane = new Plane(Vector3.up, transform.position);
+
+            if (groundPlane.Raycast(ray, out float distance))
+            {
+                Vector3 worldCursor = ray.GetPoint(distance);
+                Vector3 towardCursor = worldCursor - transform.position;
+                towardCursor.y = 0f;
+
+                if (towardCursor.magnitude > maxPeekDistance)
+                    towardCursor = towardCursor.normalized * maxPeekDistance;
+
+                peekOffset = new Vector3(towardCursor.x, 0f, towardCursor.z);
+            }
+        }
+        else
+        {
+            peekOffset = Vector3.Lerp(peekOffset, Vector3.zero, peekReturnSpeed * Time.deltaTime);
+
+            if (peekOffset.magnitude < 0.01f)
+                peekOffset = Vector3.zero;
+        }
     }
 
     void Move()
@@ -98,12 +142,11 @@ public class PlayerController : MonoBehaviour
         if (isGrounded && velocity.y < 0)
             velocity.y = 0f;
 
-        // === Вращение игрока по мыши ===
         if (isCameraMovable)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             Plane groundPlane = new Plane(Vector3.up, transform.position);
-            
+
             if (groundPlane.Raycast(ray, out float distance))
             {
                 Vector3 lookPoint = ray.GetPoint(distance);
@@ -132,12 +175,6 @@ public class PlayerController : MonoBehaviour
             if (moveBackward) moveDirection -= Vector3.forward;
             if (moveLeft)     moveDirection -= Vector3.right;
             if (moveRight)    moveDirection += Vector3.right;
-            
-            if (isRunning)
-            {
-                
-            }
-
 
             if (moveDirection != Vector3.zero)
                 moveDirection = moveDirection.normalized;
@@ -165,7 +202,6 @@ public class PlayerController : MonoBehaviour
                 velocity.y += heavyGravity * Time.deltaTime;
                 characterController.Move(velocity * Time.deltaTime);
             }
-
         }
     }
 
@@ -247,7 +283,37 @@ public class PlayerController : MonoBehaviour
         return Camera.main != null ? Camera.main.transform.localRotation : Quaternion.identity;
     }
 
-    // === NoClip ===
+    public void OnDeath()
+    {
+        Destroy(rayObject);
+        isPeeking = false;
+        UpdatePeekOffset();
+    }
+
+    public void DrawRay(Vector3 start, Vector3 direction)
+    {
+        if (!rayObject || !rayLine)
+        {
+            rayObject = new GameObject("PlayerRay");
+            rayLine = rayObject.AddComponent<LineRenderer>();
+
+            rayLine.positionCount = 2;
+
+            rayLine.startWidth = 0.05f;
+            rayLine.endWidth = 0.05f;
+            rayLine.material = new Material(Shader.Find("Sprites/Default"));
+
+            var color = Color.red;
+            rayLine.startColor = color;
+            color.a = 0f;
+            rayLine.endColor = color;
+        }
+
+        rayLine.SetPosition(0, start);
+        rayLine.SetPosition(1, start + direction);
+    }
+
+
     public static void NoClipOn()
     {
         if (Instance == null) return;
@@ -323,29 +389,5 @@ public class PlayerController : MonoBehaviour
         obj.layer = layer;
         foreach (Transform child in obj.transform)
             SetLayerRecursively(child.gameObject, layer);
-    }
-
-    public void DrawRay(Vector3 start, Vector3 direction)
-    {
-        if (!rayObject || !rayLine)
-        {
-            rayObject = new GameObject("PlayerRay");
-            rayLine = rayObject.AddComponent<LineRenderer>();
-
-            rayLine.positionCount = 2;
-        
-            rayLine.startWidth = 0.05f;
-            rayLine.endWidth = 0.05f;
-            rayLine.material = new Material(Shader.Find("Sprites/Default"));
-
-            var color = Color.red;
-            rayLine.startColor = color;
-            color.a = 0f;
-            rayLine.endColor = color;
-        }
-        
-        rayLine.SetPosition(0, start);
-        rayLine.SetPosition(1, start + direction);
-        
     }
 }

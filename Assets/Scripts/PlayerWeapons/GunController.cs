@@ -113,4 +113,12 @@ public class GunController : MonoBehaviour
     {
         ammunitionData.AddAmmo(type, amount);
     }
+
+    public void DeactivateAll()
+    {
+        foreach (var item in playerGuns)
+        {
+            item.Value.isActive = false;
+        }
+    }
 }

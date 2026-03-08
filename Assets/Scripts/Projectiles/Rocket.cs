@@ -54,40 +54,9 @@ public class Rocket : Projectile
 
     public override void HandleHit(RaycastHit hit)
     {
-        switch (hit.collider.tag)
-        {
-            /*
-            case "EnemyHead":
-                var enemyHead = hit.collider.GetComponent<EnemyHead>();
-                if (enemyHead != null) enemyHead.TakeDamage(175);
-                Destroy(gameObject);
-                break;
-
-            case "Enemy":
-                var enemy = hit.collider.GetComponent<Enemy>();
-                if (enemy != null && enemy.TakeDamage(damage))
-                    GunController.SpawnBloodDustAtHitPoint(hit.point);
-                Destroy(gameObject);
-                break;
-
-            case "ExplosiveObject":
-                var barrel = hit.collider.GetComponent<RedBarrel>();
-                if (barrel != null)
-                {
-                    barrel.health -= damage;
-                    if (barrel.health <= 0) barrel.Boom();
-                }
-                Destroy(gameObject);
-                break;
-
-
-            default:
-                break;
-            */
-            case "Environment":
-                Explosion.CreateExplosion(10, transform);
-                Destroy(gameObject);
-                break;
-        }
+        Explosion.CreateExplosion(10, transform);
+        Destroy(gameObject);
+            
+        
     }
 }

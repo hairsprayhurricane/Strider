@@ -59,17 +59,9 @@ public class LeadProjectile : Projectile
     {
         switch (hit.collider.tag)
         {
-            /*
-            case "EnemyHead":
-                var enemyHead = hit.collider.GetComponent<EnemyHead>();
-                if (enemyHead != null) enemyHead.TakeDamage(175);
-                Destroy(gameObject);
-                break;
-
             case "Enemy":
                 var enemy = hit.collider.GetComponent<Enemy>();
-                if (enemy != null && enemy.TakeDamage(damage))
-                    GunController.SpawnBloodDustAtHitPoint(hit.point);
+                enemy.TakeDamage(damage);
                 Destroy(gameObject);
                 break;
 
@@ -84,14 +76,11 @@ public class LeadProjectile : Projectile
                 break;
 
             case "Environment":
-                GunController.SpawnWallDustAtHitPoint(hit.point);
-                SpawnBulletHoleDecal(transform.position);
                 Destroy(gameObject);
                 break;
 
             default:
                 break;
-            */
         }
     }
 

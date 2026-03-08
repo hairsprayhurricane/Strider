@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 9154671000030397820}
   m_Layer: 0
   m_Name: Rocket
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -265,4 +265,4 @@ MonoBehaviour:
   prefabNumber: 0
   bulletLayerMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 136

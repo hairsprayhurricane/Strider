@@ -22,6 +22,50 @@ MonoBehaviour:
   gain:
     m_OverrideState: 1
     m_Value: {x: 1, y: 1, z: 1, w: 0}
+--- !u!114 &-9065549765406337030
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Tint
+  m_EditorClassIdentifier: Assembly-CSharp::Tint
+  active: 1
+  y:
+    m_OverrideState: 1
+    m_Value: 1
+  u:
+    m_OverrideState: 1
+    m_Value: 1
+  v:
+    m_OverrideState: 1
+    m_Value: 1
+  swapUV:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-9060786606245561419
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: BleedingColors
+  m_EditorClassIdentifier: Assembly-CSharp::BleedingColors
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 3
+  shift:
+    m_OverrideState: 1
+    m_Value: 0.2
 --- !u!114 &-8270506406425502121
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -146,6 +190,29 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+--- !u!114 &-7066266936072865146
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Distortion
+  m_EditorClassIdentifier: Assembly-CSharp::Distortion
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0.01
+  valueX:
+    m_OverrideState: 1
+    m_Value: 4.51
+  displacementTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
 --- !u!114 &-6335409530604852063
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -218,6 +285,25 @@ MonoBehaviour:
   intensity:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &-5803024394780743357
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Shift
+  m_EditorClassIdentifier: Assembly-CSharp::Shift
+  active: 1
+  valueX:
+    m_OverrideState: 1
+    m_Value: 0.1
+  valueY:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &-5520245016509672950
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -258,6 +344,25 @@ MonoBehaviour:
   maxNits:
     m_OverrideState: 1
     m_Value: 1000
+--- !u!114 &-5468880343198472268
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Shift
+  m_EditorClassIdentifier: Assembly-CSharp::Shift
+  active: 1
+  valueX:
+    m_OverrideState: 1
+    m_Value: 0.1
+  valueY:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &-5360449096862653589
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -318,6 +423,22 @@ MonoBehaviour:
   valueY:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &-4494162906973815626
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: VUnsync
+  m_EditorClassIdentifier: Assembly-CSharp::VUnsync
+  active: 1
+  valueX:
+    m_OverrideState: 1
+    m_Value: 0.5
 --- !u!114 &-4463884970436517307
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -337,6 +458,48 @@ MonoBehaviour:
   cropToFit:
     m_OverrideState: 1
     m_Value: 1
+--- !u!114 &-4443341670603511475
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Distortion
+  m_EditorClassIdentifier: Assembly-CSharp::Distortion
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0.01
+  valueX:
+    m_OverrideState: 1
+    m_Value: 4.51
+  displacementTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+--- !u!114 &-4405498889789170904
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: PixelizePostProcess
+  m_EditorClassIdentifier: Assembly-CSharp::PixelizePostProcess
+  active: 1
+  pixelSize:
+    m_OverrideState: 1
+    m_Value: 10
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &-4100746354067845006
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -392,7 +555,115 @@ MonoBehaviour:
   valueX:
     m_OverrideState: 1
     m_Value: 0.5
+--- !u!114 &-2905630368642891764
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Scanlines
+  m_EditorClassIdentifier: Assembly-CSharp::Scanlines
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  color:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  valueX:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &-2219679707981867274
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: PixelizePostProcess
+  m_EditorClassIdentifier: Assembly-CSharp::PixelizePostProcess
+  active: 1
+  pixelSize:
+    m_OverrideState: 1
+    m_Value: 10
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-1957099076525679953
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: BleedingColors
+  m_EditorClassIdentifier: Assembly-CSharp::BleedingColors
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 3
+  shift:
+    m_OverrideState: 1
+    m_Value: 0.2
+--- !u!114 &-1854904155756140244
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Distortion
+  m_EditorClassIdentifier: Assembly-CSharp::Distortion
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0.01
+  valueX:
+    m_OverrideState: 1
+    m_Value: 4.51
+  displacementTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
 --- !u!114 &-1729988757766614060
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Tint
+  m_EditorClassIdentifier: Assembly-CSharp::Tint
+  active: 1
+  y:
+    m_OverrideState: 1
+    m_Value: 1
+  u:
+    m_OverrideState: 1
+    m_Value: 1
+  v:
+    m_OverrideState: 1
+    m_Value: 1
+  swapUV:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-1550181219361850461
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -586,13 +857,48 @@ MonoBehaviour:
   - {fileID: -6288072647309666549}
   - {fileID: 7518938298396184218}
   - {fileID: -1410297666881709256}
-  - {fileID: -1729988757766614060}
-  - {fileID: -3195279125321509816}
-  - {fileID: 4171230060700759854}
-  - {fileID: 5103078415415752869}
-  - {fileID: 8101319145851951153}
-  - {fileID: -4831784489005724466}
-  - {fileID: -6062672767466487752}
+  - {fileID: 6387377480256085110}
+  - {fileID: 411827861748743691}
+  - {fileID: 9130003875391988493}
+  - {fileID: -4443341670603511475}
+  - {fileID: 2035165023898611037}
+  - {fileID: -1957099076525679953}
+  - {fileID: 704499688296113187}
+--- !u!114 &411827861748743691
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: VUnsync
+  m_EditorClassIdentifier: Assembly-CSharp::VUnsync
+  active: 1
+  valueX:
+    m_OverrideState: 1
+    m_Value: 0.5
+--- !u!114 &704499688296113187
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Shift
+  m_EditorClassIdentifier: Assembly-CSharp::Shift
+  active: 1
+  valueX:
+    m_OverrideState: 1
+    m_Value: 0.1
+  valueY:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &853819529557874667
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -903,6 +1209,28 @@ MonoBehaviour:
   contribution:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &2035165023898611037
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Scanlines
+  m_EditorClassIdentifier: Assembly-CSharp::Scanlines
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0
+  color:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  valueX:
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &3280849127865429901
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1062,6 +1390,69 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: {fileID: 0}
     dimension: 1
+--- !u!114 &5106511947097618085
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: VUnsync
+  m_EditorClassIdentifier: Assembly-CSharp::VUnsync
+  active: 1
+  valueX:
+    m_OverrideState: 1
+    m_Value: 0.5
+--- !u!114 &6141519962692705812
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Scanlines
+  m_EditorClassIdentifier: Assembly-CSharp::Scanlines
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0
+  color:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  valueX:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &6387377480256085110
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Tint
+  m_EditorClassIdentifier: Assembly-CSharp::Tint
+  active: 1
+  y:
+    m_OverrideState: 1
+    m_Value: 1
+  u:
+    m_OverrideState: 1
+    m_Value: 1
+  v:
+    m_OverrideState: 1
+    m_Value: 1
+  swapUV:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &6940869943325143175
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1075,6 +1466,25 @@ MonoBehaviour:
   m_Name: VolumeComponentSupportedOnAnySRP
   m_EditorClassIdentifier: Unity.RenderPipelines.Core.Editor.Tests:UnityEngine.Rendering.Tests:VolumeComponentEditorSupportedOnTests/VolumeComponentSupportedOnAnySRP
   active: 1
+--- !u!114 &6968193232606884565
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: BleedingColors
+  m_EditorClassIdentifier: Assembly-CSharp::BleedingColors
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 3
+  shift:
+    m_OverrideState: 1
+    m_Value: 0.2
 --- !u!114 &7173750748008157695
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1223,5 +1633,24 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 0
   p2:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &9130003875391988493
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: PixelizePostProcess
+  m_EditorClassIdentifier: Assembly-CSharp::PixelizePostProcess
+  active: 1
+  pixelSize:
+    m_OverrideState: 1
+    m_Value: 10
+  intensity:
     m_OverrideState: 1
     m_Value: 0

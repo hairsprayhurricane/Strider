@@ -49,24 +49,40 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.3.10f1\Editor\Data\Tools\BuildPipeline\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Enemy\Default\AngleToPlayer.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\GunController.cs" />
     <Compile Include="Assets\Scripts\SpriteRotator.cs" />
     <Compile Include="Assets\Scripts\RedBarrel.cs" />
     <Compile Include="Assets\Shaders\VHS\BleedingColors\BleedingColorsRendererFeature.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Default\EnemyAi.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Default\EnemyAwarness.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\AmmunitionData.cs" />
+    <Compile Include="Assets\Scripts\PlayerHealth.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\Weapons\Unmaker.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Shaders\VHS\BleedingColors\BleedingColors.cs" />
+    <Compile Include="Assets\Scripts\Projectiles\BuckshotProjectile.cs" />
+    <Compile Include="Assets\Shaders\VHS\Pixel Filter\PixelizePostProcess.cs" />
+    <Compile Include="Assets\Shaders\VHS\Scanlines\Scanlines.cs" />
+    <Compile Include="Assets\Shaders\VHS\ShiftVHS\Shift.cs" />
     <Compile Include="Assets\Shaders\VHS\VUnsync\VUnsyncRendererFeature.cs" />
     <Compile Include="Assets\Shaders\VHS\Scanlines\ScanlinesRendererFeature.cs" />
     <Compile Include="Assets\Scripts\Projectiles\Rocket.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Default\EnemyMelee.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Default\EnemyBloodCellBehavior.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\PlayerGun.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Default\Enemy.cs" />
     <Compile Include="Assets\Scripts\ClassicRandom.cs" />
     <Compile Include="Assets\Shaders\VHS\DIstrortion\DistortionRendererFeature.cs" />
     <Compile Include="Assets\Shaders\VHS\Pixel Filter\PixelizePostProcessRendererFeature.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\WeaponPickup.cs" />
     <Compile Include="Assets\Scripts\Projectiles\Projectile.cs" />
     <Compile Include="Assets\Scripts\ShaderVolumeManager.cs" />
+    <Compile Include="Assets\Shaders\VHS\VUnsync\VUnsync.cs" />
     <Compile Include="Assets\Scripts\PlayerInventory.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Default\EnemyManager.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Default\EnemyType.cs" />
+    <Compile Include="Assets\Shaders\VHS\DIstrortion\Distortion.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\GunData.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\Weapons\Shotgun.cs" />
     <Compile Include="Assets\Scripts\Explosion.cs" />
@@ -75,9 +91,12 @@
     <Compile Include="Assets\Scripts\Projectiles\LeadProjectile.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\Weapons\RocketLauncher.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\Weapons\PlasmaGun.cs" />
+    <Compile Include="Assets\Shaders\VHS\TintVHS\Tint.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\Weapons\BFG.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\Weapons\MachineGun.cs" />
     <Compile Include="Assets\Shaders\VHS\TintVHS\TintRendererFeature.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Default\EnemyGun.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Default\EnemyRotator.cs" />
     <Compile Include="Assets\Shaders\VHS\ShiftVHS\ShiftRendererFeature.cs" />
   </ItemGroup>
   <ItemGroup>

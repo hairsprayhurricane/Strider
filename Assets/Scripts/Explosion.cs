@@ -78,6 +78,32 @@ public class Explosion
     {
         float radius = explosionRadius;
         float normalizedDistance = Mathf.Clamp01(distance / radius);
+
+
+        if (target.CompareTag("Player"))
+        {
+            PlayerHealth playerHealth = target.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                short damage = straightDamage < 0
+                    ? (short)Mathf.Lerp(100, 10, normalizedDistance)
+                    : straightDamage;
+                playerHealth.DamagePlayer(damage, explosionCenter, PlayerHealth.LastDamageType.explosion);
+            }
+        }
+        else if (target.CompareTag("Enemy") && !damageOnlyPlayer)
+        {
+            Enemy enemy = target.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.KickEnemy(explosionCenter, 10);
+                enemy.TakeDamage(200);
+            }
+        }
+        else if (target.CompareTag("ExplosiveObject"))
+        {
+            target.GetComponent<RedBarrel>().Boom(ClassicRandom.Range(0.3f, 4f));
+        }
     }
 
     private static void CreateVisuals(GameObject creatableExplosion, Transform explosionCenter)
@@ -143,9 +169,6 @@ public class Explosion
                         var instanceMaterial = explosionInstance.GetComponent<Renderer>().material;
                         var light = explosionInstance.GetComponent<Light>();
                         var instanceObject = ShaderVolumeManager.Instance;
-
-                        if (!instanceMaterial) Debug.Log("!!!!!!");
-                        if (instianedParticles.Count == 0) Debug.Log("!!!!!!!!!!!!!!!!!!!!!!");
 
                         instanceObject.StartCoroutine(EmissionIntensityBehavior(instanceMaterial, clipLength, instianedParticles));
                         instanceObject.StartCoroutine(LightBehavior(light, clipLength));
