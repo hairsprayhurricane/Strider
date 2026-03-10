@@ -87,7 +87,8 @@ public class PlayerController : MonoBehaviour
         Move();
         isPeeking = Input.GetMouseButton(1);
         UpdatePeekOffset();
-        DrawRay(transform.position, transform.forward * 10);
+        
+        DrawRay(transform.position, transform.forward * GetDistanceToCursor());
     }
 
     void LateUpdate()
@@ -307,10 +308,26 @@ public class PlayerController : MonoBehaviour
             rayLine.startColor = color;
             color.a = 0f;
             rayLine.endColor = color;
+
+            //FigureOutlineController.trackedObjects.Add(rayObject);
         }
 
         rayLine.SetPosition(0, start);
         rayLine.SetPosition(1, start + direction);
+    }
+
+    public float GetDistanceToCursor()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Plane groundPlane = new Plane(Vector3.up, transform.position);
+
+        if (groundPlane.Raycast(ray, out float distance))
+        {
+            Vector3 worldCursor = ray.GetPoint(distance);
+            return Vector3.Distance(transform.position, worldCursor);
+        }
+
+        return 0f;
     }
 
 

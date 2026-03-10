@@ -78,6 +78,7 @@
     <Compile Include="Assets\Scripts\PlayerWeapons\WeaponPickup.cs" />
     <Compile Include="Assets\Scripts\Projectiles\Projectile.cs" />
     <Compile Include="Assets\Scripts\ShaderVolumeManager.cs" />
+    <Compile Include="Assets\Scripts\FigureOutlineController.cs" />
     <Compile Include="Assets\Shaders\VHS\VUnsync\VUnsync.cs" />
     <Compile Include="Assets\Scripts\PlayerInventory.cs" />
     <Compile Include="Assets\Scripts\Enemy\Default\EnemyManager.cs" />
@@ -111,6 +112,7 @@
     <None Include="Assets\Shaders\VHS\ShiftVHS\ShiftVHS.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\Shaders\VHS\Scanlines\ScanlinesVHS.shader" />
+    <None Include="Assets\Shaders\Outline\Outline.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\SDFFunctions.hlsl" />
     <None Include="Assets\Shaders\VHS\DIstrortion\DistortionVHS.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />

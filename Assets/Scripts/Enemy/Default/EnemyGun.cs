@@ -91,6 +91,8 @@ public class EnemyGun : MonoBehaviour
     {
         isReadyToShoot = false;
 
+        yield return new WaitForSeconds(ClassicRandom.value);
+
         for (int i = 0; i < amount; i++)
         {
             var waitTime = ClassicRandom.value / 2;
@@ -114,11 +116,13 @@ public class EnemyGun : MonoBehaviour
 
     public IEnumerator LookAtPlayer(Collider target, float time = 1f)
     {
+
         float elapsed = 0f;
 
         while (elapsed < time)
         {
             if (target == null) yield break;
+            if(!enemyAi) yield break;
 
             Vector3 direction = (target.transform.position - transform.position).normalized;
             direction.y = 0f;

@@ -157,7 +157,4 @@ MonoBehaviour:
   noAmmoSound: {fileID: 0}
   weaponChangeSound: {fileID: 0}
   audioSource: {fileID: 0}
-  recoilPitch: 2
-  shakeForceMultiplier: 1
-  recoilYawMax: 2
-  recoilDuration: 0.1
+  shakeForceMultiplier: 2

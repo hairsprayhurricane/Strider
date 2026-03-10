@@ -45,7 +45,7 @@ public class PlayerHealth : MonoBehaviour
         {
             if(health < maxHealth)
             {
-                health += 1;
+                health += 3;
                 if (health > maxHealth) health = maxHealth;
                 var currentHealth = Mathf.Clamp(health, 0, 100);
 
@@ -107,6 +107,8 @@ public class PlayerHealth : MonoBehaviour
 
         ShaderVolumeManager.Instance.SetColorAdjustmentColorByValue(health);
         ShaderVolumeManager.Instance.SetFilmGrainByValue(health);
+
+        playerController.ShakeCamera(magnitude:1);
     }
 
     public void DamagePlayerThroughArmor(short damage)

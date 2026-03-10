@@ -46,10 +46,7 @@ public abstract class PlayerGun : MonoBehaviour
     public AudioSource audioSource;
 
     [Header("Recoil")]
-    public float recoilPitch = 2f;
     public float shakeForceMultiplier = 1f;
-    public float recoilYawMax = 2f;
-    public float recoilDuration = 0.1f;
 
     void Start()
     {
@@ -84,19 +81,12 @@ public abstract class PlayerGun : MonoBehaviour
             GunController.Instance.TryConsumeAmmo(weaponAmmo, bulletPerShot);
         }
 
-        SimulateRecoil(recoilPitch, shakeForceMultiplier);
+        SimulateRecoil(shakeForceMultiplier);
     }
 
-    protected void SimulateRecoil(float recoilPitch = 1, float shakeForceMultiplier = 1)
+    protected void SimulateRecoil(float shakeForceMultiplier = 1)
     {
-        PlayerController playerController = PlayerController.Instance;
-        if (playerController != null)
-        {
-            float yawRecoil = Random.Range(-recoilYawMax, recoilYawMax);
-            playerController.ApplyRecoil(recoilPitch, yawRecoil, recoilDuration);
-        }
-
-        //PlayerController.Instance.ShakeCamera(0.3f, 0.5f * shakeForceMultiplier);
+        PlayerController.Instance.ShakeCamera(0.3f, 0.5f * shakeForceMultiplier);
     }
 
     /*protected virtual void SimulateRecoil(float recoilPitch)

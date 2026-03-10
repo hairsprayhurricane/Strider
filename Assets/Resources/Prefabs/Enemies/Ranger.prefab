@@ -349,6 +349,7 @@ MonoBehaviour:
   shootingDistance: 80
   isReadyToShoot: 0
   grenadeCount: 0
+  damage: 2
   projectilePrefab: {fileID: 3755346310232537546, guid: f7262e2279efcf44795287d5d78a5213, type: 3}
 --- !u!82 &1689295426548158799
 AudioSource:

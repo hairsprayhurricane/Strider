@@ -33,7 +33,7 @@ public class MachineGun : PlayerGun
 
         Quaternion spawnRot = Quaternion.LookRotation(offsetDir);
 
-        Projectile.Spawn(mainProjectilePrefab, spawnPos, spawnRot, gameObject);
+        Projectile.Spawn(mainProjectilePrefab, spawnPos, spawnRot, gameObject, damage);
 
         AfterFire();
     }
