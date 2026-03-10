@@ -743,9 +743,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1642792127213981550, guid: c8c338e760e1447459990318deb2a5d4, type: 3}
+      propertyPath: isGod
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3512834731912426470, guid: c8c338e760e1447459990318deb2a5d4, type: 3}
       propertyPath: maxPeekDistance
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4420320867310770973, guid: c8c338e760e1447459990318deb2a5d4, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5993130955708493928, guid: c8c338e760e1447459990318deb2a5d4, type: 3}
       propertyPath: m_LocalPosition.x

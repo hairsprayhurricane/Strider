@@ -3,13 +3,6 @@ using UnityEngine;
 
 public class Rocket : Projectile
 {
-    private Vector3 lastPosition;
-    private Vector3 startPosition;
-    
-    private static readonly int SrcBlendId = Shader.PropertyToID("_SrcBlend");
-    private static readonly int DstBlendId = Shader.PropertyToID("_DstBlend");
-    private static readonly int ModeId = Shader.PropertyToID("_Mode");
-    
     public Rocket(
         Vector3 position,
         Quaternion rotation,
@@ -36,6 +29,8 @@ public class Rocket : Projectile
 
         lastPosition = transform.position;
         startPosition = transform.position;
+
+        StartCoroutine(NonAvoidableExplosion());
     }
 
     void Update()
@@ -54,9 +49,15 @@ public class Rocket : Projectile
 
     public override void HandleHit(RaycastHit hit)
     {
+
         Explosion.CreateExplosion(10, transform);
         Destroy(gameObject);
-            
-        
+    }
+    
+    public IEnumerator NonAvoidableExplosion()
+    {
+        yield return new WaitForSeconds(1);
+        Explosion.CreateExplosion(10, transform);
+        Destroy(gameObject);
     }
 }

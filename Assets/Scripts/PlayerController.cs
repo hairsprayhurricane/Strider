@@ -303,7 +303,7 @@ public class PlayerController : MonoBehaviour
             rayLine.endWidth = 0.05f;
             rayLine.material = new Material(Shader.Find("Sprites/Default"));
 
-            var color = Color.red;
+            var color = Color.blue;
             rayLine.startColor = color;
             color.a = 0f;
             rayLine.endColor = color;

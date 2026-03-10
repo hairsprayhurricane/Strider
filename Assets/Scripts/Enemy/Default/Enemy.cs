@@ -40,6 +40,9 @@ public class Enemy : MonoBehaviour
         electrisity = 5
     }
 
+    private GameObject rayObject;
+    private LineRenderer rayLine;
+
     public void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -61,6 +64,11 @@ public class Enemy : MonoBehaviour
         //InitializeHealth();
 
         //KelerMarker.Instance.CallKelerOnEnemy(this, 1);
+    }
+
+    void Update()
+    {
+        if(!isDead) DrawRay(transform.position, transform.forward * 10);
     }
 
     void OnTriggerEnter(Collider other)
@@ -158,6 +166,8 @@ public class Enemy : MonoBehaviour
 
         isDead = true;
         //Counters.killCount++;
+
+        Destroy(rayObject);
 
     }
     public bool TakeDamage(short damage)
@@ -361,6 +371,30 @@ public class Enemy : MonoBehaviour
             deathReason = DeathReason.body;
 
         Die((byte)deathReason);
+    }
+
+    public void DrawRay(Vector3 start, Vector3 direction)
+    {
+        if (!rayObject || !rayLine)
+        {
+            rayObject = new GameObject("EnemyRay");
+            rayObject.transform.transform.SetParent(transform);
+            rayLine = rayObject.AddComponent<LineRenderer>();
+
+            rayLine.positionCount = 2;
+
+            rayLine.startWidth = 0.05f;
+            rayLine.endWidth = 0.05f;
+            rayLine.material = new Material(Shader.Find("Sprites/Default"));
+
+            var color = Color.red;
+            rayLine.startColor = color;
+            color.a = 0f;
+            rayLine.endColor = color;
+        }
+
+        rayLine.SetPosition(0, start);
+        rayLine.SetPosition(1, start + direction);
     }
 
 

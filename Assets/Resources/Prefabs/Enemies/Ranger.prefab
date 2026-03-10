@@ -349,6 +349,7 @@ MonoBehaviour:
   shootingDistance: 80
   isReadyToShoot: 0
   grenadeCount: 0
+  projectilePrefab: {fileID: 3755346310232537546, guid: f7262e2279efcf44795287d5d78a5213, type: 3}
 --- !u!82 &1689295426548158799
 AudioSource:
   m_ObjectHideFlags: 0
@@ -719,6 +720,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerSpottedSound: {fileID: 6534036204331468225}
   isStatic: 0
+  enemyAwareness: {fileID: 0}
   enemyNavMeshAgent: {fileID: 0}
   isPlayerSpotted: 0
   isInSight: 0

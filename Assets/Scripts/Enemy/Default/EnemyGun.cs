@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class EnemyGun : MonoBehaviour
 {
@@ -21,6 +22,10 @@ public class EnemyGun : MonoBehaviour
     public byte grenadeCount = 1;
     public static bool isSmokeGrenadeUsable = true;
     public static bool isEmpGrenadeUsable = false;
+
+    public short damage = 2;
+
+    public GameObject projectilePrefab;
     public void Start()
     {
         enemyAi = GetComponentInParent<EnemyAi>();
@@ -30,27 +35,26 @@ public class EnemyGun : MonoBehaviour
         maxLightIntensity = light.intensity;
 
         minDamage = 15;
-        maxDamage = 30;
-    }
+        maxDamage = 20;
 
+    }
 
     public virtual void Update()
     {
         if (enemyAi.isPlayerSpotted && !enemyAi.isMeleeAttacking && enemyAi.enemyAwareness.isAggro)
         {
             Collider playerCollider = FindPlayerCollider();
-            if (playerCollider != null && IsPlayerInShootingRange(playerCollider) && Time.time - lastShotTime >= GetRandomDelayTime() && isReadyToShoot)
+            if (playerCollider != null
+                && IsPlayerInShootingRange(playerCollider)
+                && Time.time - lastShotTime >= GetRandomDelayTime()
+                && isReadyToShoot)
             {
                 if (CanShootAtPlayer(playerCollider))
                 {
-                    ShootAtPlayer(playerCollider);
-                    StartCoroutine(ResetShootingAnimation(reloadTime));
-                    
+                    StartCoroutine(ShootAtPlayer(playerCollider, ClassicRandom.Range(3,6)));
                 }
             }
-
         }
-        //Debug.DrawRay(transform.position, transform.forward * 10000, Color.red);
     }
 
     protected Collider FindPlayerCollider()
@@ -66,9 +70,9 @@ public class EnemyGun : MonoBehaviour
 
     public float GetDistanceToPlayer()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, PlayerController.Instance.transform.position);
-        return distanceToPlayer;
+        return Vector3.Distance(transform.position, PlayerController.Instance.transform.position);
     }
+
     public bool CanShootAtPlayer(Collider target)
     {
         Vector3 origin = transform.position;
@@ -83,49 +87,53 @@ public class EnemyGun : MonoBehaviour
         return false;
     }
 
-/*    protected virtual IEnumerator ShootAnimCor()
+    public virtual IEnumerator ShootAtPlayer(Collider target, int amount)
     {
-        animator.SetBool("isShooting", true);
-        animator.Play("enemyShoot1");
-        yield return new WaitForSeconds(0.3f);
-        animator.Play("enemyShoot2");
-        StartCoroutine(EnableLight());
-        yield return new WaitForSeconds(1);
-        animator.SetBool("isShooting", false);
-    }
-*/
-    public virtual void ShootAtPlayer(Collider target)
-    {
-        transform.LookAt(target.transform.position);
-
-        if (HitTarget())
-        {
-            DamagePlayer(target);
-        }
-
-        if (!audioSource.isPlaying)
-        {
-            //StartCoroutine(ShootAnimCor());
-            audioSource.Play();
-        }
-
-        lastShotTime = Time.time;
-
         isReadyToShoot = false;
-    }
 
-    protected bool HitTarget()
-    {
-        return ClassicRandom.value <= hitChance;
-    }
-
-    protected void DamagePlayer(Collider target)
-    {
-        PlayerHealth playerHealth = target.GetComponent<PlayerHealth>();
-        if (playerHealth != null)
+        for (int i = 0; i < amount; i++)
         {
-            short damage = ClassicRandom.RangeShort(minDamage, maxDamage);
-            playerHealth.DamagePlayer(damage, transform);
+            var waitTime = ClassicRandom.value / 2;
+
+            StartCoroutine(LookAtPlayer(target, waitTime));
+
+            Vector3 direction = (target.transform.position - transform.position).normalized;
+            Quaternion spawnRot = Quaternion.LookRotation(direction);
+
+            Projectile.Spawn(projectilePrefab, transform.position, spawnRot, gameObject);
+
+            if (!audioSource.isPlaying)
+                audioSource.Play();
+
+            lastShotTime = Time.time;
+            yield return new WaitForSeconds(waitTime);
+        }
+
+        isReadyToShoot = true;
+    }
+
+    public IEnumerator LookAtPlayer(Collider target, float time = 1f)
+    {
+        float elapsed = 0f;
+
+        while (elapsed < time)
+        {
+            if (target == null) yield break;
+
+            Vector3 direction = (target.transform.position - transform.position).normalized;
+            direction.y = 0f;
+
+            if (direction.sqrMagnitude > 0.0001f)
+            {
+                Quaternion bodyRot = Quaternion.LookRotation(direction);
+                enemyAi.transform.rotation = Quaternion.Slerp(
+                    enemyAi.transform.rotation, bodyRot, Time.deltaTime * 15f);
+            }
+
+            transform.LookAt(target.transform.position);
+
+            elapsed += Time.deltaTime;
+            yield return null;
         }
     }
 
@@ -133,28 +141,11 @@ public class EnemyGun : MonoBehaviour
     {
         return ClassicRandom.Range(minDelayShootTime, maxDelayShootTime);
     }
-
-    public virtual IEnumerator ResetShootingAnimation(float time)
-    {
-        yield return new WaitForSeconds(time);
-        isReadyToShoot = true;
-    }
-
-    public virtual IEnumerator ResetShootingAnimation()
-    {
-        yield return new WaitForSeconds(reloadTime);
-        isReadyToShoot = true;
-    }
-
     public IEnumerator EnableLight()
     {
         float currentLightIntensity = maxLightIntensity;
-
         light.enabled = true;
-
-
         light.intensity = maxLightIntensity;
-
         yield return new WaitForSeconds(0.1f);
 
         while (light.intensity > 0)
@@ -170,6 +161,4 @@ public class EnemyGun : MonoBehaviour
         StopAllCoroutines();
         light.enabled = false;
     }
-
-
 }

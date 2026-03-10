@@ -33,9 +33,7 @@ public class RocketLauncher : PlayerGun
 
         Quaternion spawnRot = Quaternion.LookRotation(offsetDir);
 
-        GameObject bulletObj = Instantiate(mainProjectilePrefab, spawnPos, spawnRot);
-        //LeadProjectile bullet = bulletObj.GetComponent<LeadProjectile>();
-        //bullet.damage = damage;
+        Projectile.Spawn(mainProjectilePrefab, spawnPos, spawnRot, gameObject);
 
         AfterFire();
     }

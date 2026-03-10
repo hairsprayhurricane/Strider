@@ -56,7 +56,7 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    public void DamagePlayer(short damage, Transform otherTransform, LastDamageType lastDamageType = 0)
+    public void DamagePlayer(short damage, Transform otherTransform = default, LastDamageType lastDamageType = 0)
     {
 
         if (lastDamageType == LastDamageType.explosion)

@@ -149,7 +149,7 @@ MonoBehaviour:
   isActive: 0
   damage: 30
   range: 100
-  fireRate: 0.01
+  fireRate: 1
   bulletSpread: 1
   mainProjectilePrefab: {fileID: 3755346310232537546, guid: 8a5404c99cbdfb84dbe6603817de427b, type: 3}
   isInfiniteAmmo: 0

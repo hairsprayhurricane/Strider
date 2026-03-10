@@ -259,10 +259,11 @@ MonoBehaviour:
   rotation: {x: 0, y: 0, z: 0, w: 0}
   scale: {x: 0, y: 0, z: 0}
   damage: 0
-  speed: 100
+  speed: 500
   isShootedByPlayer: 0
   direction: {x: 0, y: 0, z: 0}
   prefabNumber: 0
   bulletLayerMask:
     serializedVersion: 2
-    m_Bits: 136
+    m_Bits: 200
+  summoner: {fileID: 0}

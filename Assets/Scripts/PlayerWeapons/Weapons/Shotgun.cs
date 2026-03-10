@@ -11,41 +11,25 @@ public class Shotgun : PlayerGun
 
         for (int i = 0; i < 14; i++)
         {
-            GameObject bulletObj = Instantiate(mainProjectilePrefab, spawnPos, Quaternion.identity);
+            Vector3 dir = CalculateSpreadDirection(baseDir);
+            Quaternion spawnRot = Quaternion.LookRotation(dir);
 
-            float maxAngle = bulletSpread;
-            float azimuth = Random.Range(0f, 360f);
-            float angle = Random.Range(0f, maxAngle);
-
-            Vector3 axis = baseDir;
-            Vector3 ortho = Vector3.Cross(axis, Vector3.up);
-            if (ortho.sqrMagnitude < 1e-6f) ortho = Vector3.Cross(axis, Vector3.right);
-            ortho.Normalize();
-            Vector3 ortho2 = Vector3.Cross(axis, ortho).normalized;
-            Vector3 dir = (Quaternion.AngleAxis(angle, ortho * Mathf.Cos(azimuth * Mathf.Deg2Rad) + ortho2 * Mathf.Sin(azimuth * Mathf.Deg2Rad)) * baseDir).normalized;
-            SetDirection(dir, bulletObj);   
+            Projectile.Spawn(mainProjectilePrefab, spawnPos, spawnRot, gameObject);
         }
-        
-        
+
         AfterFire();
     }
 
-    private void SetDirection(Vector3 initialDirection, GameObject bulletObj)
-    {
-        var direction = initialDirection.normalized;
-        direction = CalculateRandomDirection(direction);
-        bulletObj.transform.rotation = Quaternion.LookRotation(direction);
-    }
-
-    private Vector3 CalculateRandomDirection(Vector3 direction)
+    private Vector3 CalculateSpreadDirection(Vector3 baseDir)
     {
         Vector2 randCircle = Random.insideUnitCircle * Mathf.Tan(bulletSpread * Mathf.Deg2Rad);
 
-        Vector3 right = Vector3.Cross(direction, Vector3.up).normalized;
+        Vector3 right = Vector3.Cross(baseDir, Vector3.up).normalized;
         if (right.sqrMagnitude < 0.001f)
-            right = Vector3.Cross(direction, Vector3.right).normalized;
-        Vector3 up = Vector3.Cross(right, direction).normalized;
+            right = Vector3.Cross(baseDir, Vector3.right).normalized;
 
-        return (direction + right * randCircle.x + up * randCircle.y).normalized;
+        Vector3 up = Vector3.Cross(right, baseDir).normalized;
+
+        return (baseDir + right * randCircle.x + up * randCircle.y).normalized;
     }
 }
