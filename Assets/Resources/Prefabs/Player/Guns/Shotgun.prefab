@@ -146,6 +146,7 @@ MonoBehaviour:
   weaponClass: 1
   weaponAmmo: 1
   isAutomatic: 1
+  isSilenced: 0
   isActive: 0
   damage: 30
   range: 100
@@ -157,4 +158,4 @@ MonoBehaviour:
   noAmmoSound: {fileID: 0}
   weaponChangeSound: {fileID: 0}
   audioSource: {fileID: 5757849506699906000}
-  shakeForceMultiplier: 2
+  shakeForceMultiplier: 10

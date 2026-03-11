@@ -169,7 +169,20 @@ public class PlayerHealth : MonoBehaviour
         isDead = true;
         GunController.Instance.DeactivateAll();
         StartCoroutine(ShaderVolumeManager.Instance.DramaticallyIncreaseAndStopDistortion());
+        StartCoroutine(WaitForRestart());
 
+    }
+
+    IEnumerator WaitForRestart()
+    {
+        while(isDead)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+            yield return null;
+        }
     }
 
     /*public void GiveHealth(byte amount, ItemPickup pickup)

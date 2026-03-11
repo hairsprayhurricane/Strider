@@ -35,7 +35,7 @@ public class EnemyAi : MonoBehaviour
 
     private bool isWandering = false;
     private Coroutine wanderCoroutine;
-
+    private Coroutine chaseCoroutine;
     private Coroutine stopWalkCoroutine;
 
     private LayerMask environmentMask;
@@ -70,11 +70,9 @@ public class EnemyAi : MonoBehaviour
         pathUpdateInterval = 0.8f;
         randomPointRadius = 10f;
         baseEnemySpeed = enemySpeed;
-        if (enemyNavMeshAgent != null)
-        {
-            enemyNavMeshAgent.speed = baseEnemySpeed;
-        }
 
+        if (enemyNavMeshAgent != null)
+            enemyNavMeshAgent.speed = baseEnemySpeed;
     }
 
     private void LockPreferredDistance()
@@ -96,9 +94,7 @@ public class EnemyAi : MonoBehaviour
             }
 
             if (!IsInvoking("AggroBehavior"))
-            {
                 InvokeRepeating("AggroBehavior", 0f, aggroInterval);
-            }
         }
         else
         {
@@ -106,6 +102,7 @@ public class EnemyAi : MonoBehaviour
             {
                 CancelInvoke("AggroBehavior");
                 StopWandering();
+                StopChasing();
 
                 if (enemyNavMeshAgent != null && !isStatic)
                 {
@@ -114,6 +111,7 @@ public class EnemyAi : MonoBehaviour
                 }
 
                 isPlayerSpotted = false;
+                isMovingToPlayer = false;
             }
         }
     }
@@ -129,22 +127,67 @@ public class EnemyAi : MonoBehaviour
             return;
         }
 
-        EnforceMinimumDistance();
-
         if (CheckIsInSight())
         {
-            LookAtPlayer();
+            StopChasing();
             isMovingToPlayer = false;
 
+            LookAtPlayer();
+            EnforceMinimumDistance();
+
             if (!isWandering)
-            {
                 wanderCoroutine = StartCoroutine(WanderAtPreferredDistance());
-            }
         }
         else
         {
-            SeekPlayer();
+            StopWandering();
+
+            if (chaseCoroutine == null)
+            {
+                isMovingToPlayer = true;
+                chaseCoroutine = StartCoroutine(ChasePlayer());
+            }
         }
+    }
+
+    private IEnumerator ChasePlayer()
+    {
+        if (enemyNavMeshAgent != null && !isStatic)
+        {
+            enemyNavMeshAgent.isStopped = false;
+            enemyNavMeshAgent.speed = baseEnemySpeed;
+        }
+
+        while (isMovingToPlayer)
+        {
+            if (enemyNavMeshAgent == null || playersTransform == null || isStatic) break;
+
+            if (CheckIsInSight())
+            {
+                isMovingToPlayer = false;
+                break;
+            }
+
+            float distanceToPlayer = Vector3.Distance(transform.position, playersTransform.position);
+            enemyNavMeshAgent.speed = distanceToPlayer >= 50f ? maxSpeed : minSpeed;
+            enemyNavMeshAgent.isStopped = false;
+            enemyNavMeshAgent.SetDestination(playersTransform.position);
+
+            LookAtPlayer();
+            yield return new WaitForSeconds(pathUpdateInterval);
+        }
+
+        chaseCoroutine = null;
+    }
+
+    private void StopChasing()
+    {
+        if (chaseCoroutine != null)
+        {
+            StopCoroutine(chaseCoroutine);
+            chaseCoroutine = null;
+        }
+        isMovingToPlayer = false;
     }
 
     private void EnforceMinimumDistance()
@@ -155,16 +198,13 @@ public class EnemyAi : MonoBehaviour
         if (dist < preferredDistance)
         {
             StopWandering();
-            isMovingToPlayer = false;
 
             Vector3 dirAway = (transform.position - playersTransform.position).normalized;
             Vector3 retreatPoint = transform.position + dirAway * (preferredDistance - dist + 2f);
 
             NavMeshHit hit;
             if (NavMesh.SamplePosition(retreatPoint, out hit, randomPointRadius * 2f, NavMesh.AllAreas))
-            {
                 enemyNavMeshAgent.SetDestination(hit.position);
-            }
         }
     }
 
@@ -219,75 +259,6 @@ public class EnemyAi : MonoBehaviour
         {
             enemyNavMeshAgent.ResetPath();
             enemyNavMeshAgent.isStopped = false;
-        }
-    }
-
-    private void SeekPlayer()
-    {
-        StopWandering();
-
-        if (!isStatic && enemyNavMeshAgent != null)
-        {
-            enemyNavMeshAgent.speed = baseEnemySpeed;
-            enemyNavMeshAgent.isStopped = false;
-        }
-
-        isMovingToPlayer = true;
-
-        if (!isStatic)
-        {
-            StartCoroutine(MoveToPlayer());
-            StartCoroutine(CheckPlayerVisibility());
-        }
-    }
-
-    private IEnumerator CheckPlayerVisibility()
-    {
-        while (isMovingToPlayer)
-        {
-            yield return new WaitForSeconds(visibilityCheckInterval);
-
-            if (CheckIsInSight())
-            {
-                isMovingToPlayer = false;
-                yield break;
-            }
-        }
-    }
-
-    private IEnumerator MoveToPlayer()
-    {
-        while (isMovingToPlayer)
-        {
-            if (enemyNavMeshAgent == null || playersTransform == null || isStatic) yield break;
-
-            float distanceToPlayer = Vector3.Distance(transform.position, playersTransform.position);
-
-            if (distanceToPlayer <= preferredDistance)
-            {
-                enemyNavMeshAgent.ResetPath();
-                yield return new WaitForSeconds(pathUpdateInterval);
-                continue;
-            }
-
-            NavMeshPath path = new NavMeshPath();
-            bool hasPath = enemyNavMeshAgent.CalculatePath(playersTransform.position, path);
-
-            if (hasPath && path.status == NavMeshPathStatus.PathComplete)
-            {
-                enemyNavMeshAgent.SetDestination(playersTransform.position);
-                enemyNavMeshAgent.isStopped = false;
-                enemyNavMeshAgent.speed = distanceToPlayer >= 50f ? maxSpeed : minSpeed;
-            }
-            else
-            {
-                enemyNavMeshAgent.ResetPath();
-                Vector3 fallbackPoint = playersTransform.position + ClassicRandom.insideUnitSphere * 5f;
-                enemyNavMeshAgent.SetDestination(fallbackPoint);
-            }
-
-            LookAtPlayer();
-            yield return new WaitForSeconds(pathUpdateInterval);
         }
     }
 
@@ -356,6 +327,7 @@ public class EnemyAi : MonoBehaviour
                 return false;
             }
         }
+
         if (enemyGun != null)
         {
             Collider playerCollider = playersTransform.GetComponent<Collider>();
@@ -389,7 +361,8 @@ public class EnemyAi : MonoBehaviour
         isMovingToPlayer = false;
         isMeleeAttacking = false;
 
-        StopAllCoroutines();
+        StopWandering();
+        StopChasing();
 
         yield return new WaitForSeconds(duration);
 
@@ -418,7 +391,7 @@ public class EnemyAi : MonoBehaviour
             if (enemyAwareness && enemyAwareness.isAggro && !isStatic)
             {
                 isMovingToPlayer = true;
-                SeekPlayer();
+                chaseCoroutine = StartCoroutine(ChasePlayer());
             }
         }
     }

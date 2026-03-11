@@ -49,6 +49,7 @@ public class Rocket : Projectile
 
     public override void HandleHit(RaycastHit hit)
     {
+        //Debug.Log(hit.collider.name);
 
         Explosion.CreateExplosion(10, transform);
         Destroy(gameObject);

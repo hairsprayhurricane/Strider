@@ -45,6 +45,8 @@ public class PlayerController : MonoBehaviour
     public bool isPeeking = false;
     private Vector3 peekOffset = Vector3.zero;
 
+    public Transform cameraHolder;
+
     private LineRenderer rayLine;
 
     public PlayerHealth playerHealth;
@@ -66,8 +68,9 @@ public class PlayerController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         audioSource = GetComponent<AudioSource>();
 
-        Camera.main.transform.position = transform.position + cameraOffset;
-        Camera.main.transform.rotation = Quaternion.Euler(cameraTiltX, 0f, 0f);
+        Transform camTarget = Camera.main.transform;
+        camTarget.position = transform.position + cameraOffset;
+        camTarget.rotation = Quaternion.Euler(cameraTiltX, 0f, 0f);
     }
 
     void Update()
@@ -93,22 +96,42 @@ public class PlayerController : MonoBehaviour
     void LateUpdate()
     {
         Vector3 baseTarget = transform.position + cameraOffset;
-        Vector3 targetPos = baseTarget + peekOffset;
 
+        if (isPeeking)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Plane groundPlane = new Plane(Vector3.up, transform.position);
+
+            if (groundPlane.Raycast(ray, out float distance))
+            {
+                Vector3 worldCursor = ray.GetPoint(distance);
+                Vector3 towardCursor = worldCursor - transform.position;
+                towardCursor.y = 0f;
+
+                if (towardCursor.magnitude > maxPeekDistance)
+                    towardCursor = towardCursor.normalized * maxPeekDistance;
+
+                peekOffset = new Vector3(towardCursor.x, 0f, towardCursor.z);
+            }
+        }
+        else
+        {
+            peekOffset = Vector3.Lerp(peekOffset, Vector3.zero, peekReturnSpeed * Time.deltaTime);
+            if (peekOffset.magnitude < 0.01f)
+                peekOffset = Vector3.zero;
+        }
+
+        Vector3 targetPos = baseTarget + peekOffset;
         float speed = isPeeking ? peekFollowSpeed : peekReturnSpeed;
 
-        Camera.main.transform.position = Vector3.Lerp(
-            Camera.main.transform.position,
-            targetPos,
-            speed * Time.deltaTime
-        );
+        Transform camTarget = Camera.main.transform;
 
-        Camera.main.transform.rotation = Quaternion.Euler(cameraTiltX, 0f, 0f);
+        camTarget.position = Vector3.Lerp(camTarget.position, targetPos, speed * Time.deltaTime);
+        camTarget.rotation = Quaternion.Euler(cameraTiltX, 0f, 0f);
     }
 
     void UpdatePeekOffset()
     {
-
         if (isPeeking)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -249,23 +272,25 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator ShakeCoroutine(float duration, float magnitude)
     {
-        Vector3 originalPosition = Camera.main.transform.localPosition;
-        float elapsed = 0.0f;
+        Transform camTransform = cameraHolder;
 
+        float elapsed = 0f;
         float noiseX = Random.Range(0f, 100f);
         float noiseY = Random.Range(0f, 100f);
 
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            float x = (Mathf.PerlinNoise(noiseX, elapsed * 10f) - 0.5f) * magnitude;
-            float y = (Mathf.PerlinNoise(noiseY, elapsed * 10f) - 0.5f) * magnitude;
+            float fade = 1f - (elapsed / duration);
 
-            Camera.main.transform.localPosition = originalPosition + new Vector3(x, y, 0);
+            float x = (Mathf.PerlinNoise(noiseX, elapsed * 10f) - 0.5f) * magnitude * fade;
+            float y = (Mathf.PerlinNoise(noiseY, elapsed * 10f) - 0.5f) * magnitude * fade;
+
+            camTransform.localPosition = new Vector3(x, y, 0f);
             yield return null;
         }
 
-        Camera.main.transform.localPosition = originalPosition;
+        camTransform.localPosition = Vector3.zero;
     }
 
     public void ChangePosition(Vector3 position)
@@ -289,6 +314,7 @@ public class PlayerController : MonoBehaviour
         isPeeking = false;
         UpdatePeekOffset();
         ControllerOST.Instance.Stop();
+        ShakeCamera(magnitude:10);
     }
 
     public void DrawRay(Vector3 start, Vector3 direction)
@@ -309,8 +335,6 @@ public class PlayerController : MonoBehaviour
             rayLine.startColor = color;
             color.a = 0f;
             rayLine.endColor = color;
-
-            //FigureOutlineController.trackedObjects.Add(rayObject);
         }
 
         rayLine.SetPosition(0, start);
@@ -330,7 +354,6 @@ public class PlayerController : MonoBehaviour
 
         return 0f;
     }
-
 
     public static void NoClipOn()
     {

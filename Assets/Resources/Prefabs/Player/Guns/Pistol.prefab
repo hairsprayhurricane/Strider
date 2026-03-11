@@ -61,7 +61,7 @@ MonoBehaviour:
   noAmmoSound: {fileID: 0}
   weaponChangeSound: {fileID: 0}
   audioSource: {fileID: 5757849506699906000}
-  shakeForceMultiplier: 1
+  shakeForceMultiplier: 3
 --- !u!82 &5757849506699906000
 AudioSource:
   m_ObjectHideFlags: 0
