@@ -30,6 +30,8 @@ public abstract class Projectile : MonoBehaviour
     protected Vector3 startPosition;
     protected GameObject initSmokeBeam;
     protected TrailRenderer trailRenderer;
+
+    public bool isStealthShot;
     
     protected static readonly int SrcBlendId = Shader.PropertyToID("_SrcBlend");
     protected static readonly int DstBlendId = Shader.PropertyToID("_DstBlend");
@@ -54,10 +56,11 @@ public abstract class Projectile : MonoBehaviour
         this.direction = direction;
     }
 
-    public static Projectile Spawn(GameObject prefab, Vector3 pos, Quaternion rot, GameObject owner, short damage = default)
+    public static Projectile Spawn(GameObject prefab, Vector3 pos, Quaternion rot, GameObject owner, short damage = default, bool stealthGun = false)
     {
         var p = Instantiate(prefab, pos, rot).GetComponent<Projectile>();
         p.summoner = owner;
+        p.isStealthShot = stealthGun;
         if (damage != default) p.damage = damage;
         return p;
     }

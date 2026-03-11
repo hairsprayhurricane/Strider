@@ -18,7 +18,10 @@ public class Enemy : MonoBehaviour
     private Rigidbody rb;
     private static GameObject redSquarePrefab;
     public static GameObject bloodPuddlePrefab;
-    public AudioSource hitsound;
+    public AudioSource audioSource;
+    public AudioClip hitSound;
+    public AudioClip deathSound;
+
     public short enemyHealth = 200;
     public static byte supplyDropChance = 99;
     public bool isDead;
@@ -152,11 +155,10 @@ public class Enemy : MonoBehaviour
             Destroy(enemyAi);
         }
 
-        enemyGun.StopAllCoroutines();
-        enemyMelee.StopAllCoroutines();
+        if (enemyGun) enemyGun.StopAllCoroutines();
 
         Destroy(enemyGun);
-        Destroy(enemyMelee);
+        Destroy(enemyAwareness);
         if (spawnPuddle)
         {
             SpawnBloodPuddle(transform.position);
@@ -167,6 +169,8 @@ public class Enemy : MonoBehaviour
         isDead = true;
         //Counters.killCount++;
 
+        audioSource.PlayOneShot(deathSound);
+
         Destroy(rayObject);
 
     }
@@ -175,9 +179,9 @@ public class Enemy : MonoBehaviour
         if (!enemyAwareness.isAggro)
         {
             enemyAwareness.isAggro = true;
-            enemyAwareness.TriggerNearbyEnemies();
         }
 
+        enemyAwareness.TriggerNearbyEnemies();
         enemyHealth -= damage;
 
         _ = SpawnRedSquaresAsync().ContinueWith(t =>
@@ -189,7 +193,7 @@ public class Enemy : MonoBehaviour
         }, TaskScheduler.Default);
 
         
-        hitsound.Play();
+        audioSource.PlayOneShot(hitSound);
 
         CheckForDeath((int)Enemy.DeathReason.body);
 

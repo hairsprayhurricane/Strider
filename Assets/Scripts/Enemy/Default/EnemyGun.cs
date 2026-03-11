@@ -11,6 +11,7 @@ public class EnemyGun : MonoBehaviour
     protected float minDelayShootTime = 0.7f;
     protected float maxDelayShootTime = 1f;
     public AudioSource audioSource;
+    public AudioClip shotSound;
     public EnemyAi enemyAi;
     public Light light;
     private float maxLightIntensity;
@@ -104,8 +105,7 @@ public class EnemyGun : MonoBehaviour
 
             Projectile.Spawn(projectilePrefab, transform.position, spawnRot, gameObject);
 
-            if (!audioSource.isPlaying)
-                audioSource.Play();
+            audioSource.PlayOneShot(shotSound);
 
             lastShotTime = Time.time;
             yield return new WaitForSeconds(waitTime);

@@ -38,6 +38,14 @@ public class EnemyManager : MonoBehaviour
             enemyType.enemy.enemyAwareness.isAggro = false;
         }
     }
+    public static void AggroAll()
+    {
+        foreach (var enemyType in EnemyType.enemiesList)
+        {
+            var enemyAwareness = enemyType.enemy.enemyAwareness;
+            if (enemyAwareness) enemyAwareness.isAggro = true;
+        }
+    }
 }
 
 

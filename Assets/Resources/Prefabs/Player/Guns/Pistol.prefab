@@ -49,21 +49,19 @@ MonoBehaviour:
   weaponClass: 0
   weaponAmmo: 0
   isAutomatic: 0
+  isSilenced: 1
   isActive: 0
   damage: 30
   range: 100
   fireRate: 0.1
-  bulletSpread: 10
+  bulletSpread: 0
   mainProjectilePrefab: {fileID: 3755346310232537546, guid: f7262e2279efcf44795287d5d78a5213, type: 3}
   isInfiniteAmmo: 0
-  shotSound: {fileID: 0}
+  shotSound: {fileID: 8300000, guid: 2f0756af680de1348b4d0fd541d953a3, type: 3}
   noAmmoSound: {fileID: 0}
   weaponChangeSound: {fileID: 0}
   audioSource: {fileID: 5757849506699906000}
-  recoilPitch: 2
   shakeForceMultiplier: 1
-  recoilYawMax: 2
-  recoilDuration: 0.1
 --- !u!82 &5757849506699906000
 AudioSource:
   m_ObjectHideFlags: 0

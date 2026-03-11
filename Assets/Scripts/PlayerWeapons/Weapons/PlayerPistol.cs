@@ -33,7 +33,7 @@ public class PlayerPistol : PlayerGun
 
         Quaternion spawnRot = Quaternion.LookRotation(offsetDir);
 
-        Projectile.Spawn(mainProjectilePrefab, spawnPos, spawnRot, gameObject);
+        Projectile.Spawn(mainProjectilePrefab, spawnPos, spawnRot, gameObject, stealthGun:isSilenced);
 
         AfterFire();
     }

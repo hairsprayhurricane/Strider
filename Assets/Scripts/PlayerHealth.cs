@@ -14,7 +14,9 @@ public class PlayerHealth : MonoBehaviour
     public byte maxHealthInjectors;
     public byte healthInjectors;
     public byte injectorLeftValue;
-    public AudioSource deathSound;
+    public AudioSource audioSource;
+    public AudioClip deathSound;
+    public AudioClip deathNoise;
 //    private DamageDirectionIndicator indicator;
     public GameObject synthPuddle;
     public bool isDead;
@@ -157,6 +159,11 @@ public class PlayerHealth : MonoBehaviour
     public void Kill(LastDamageType lastDamageType = 0)
     {
         Debug.Log("Dead");
+        audioSource.clip = deathNoise;
+        audioSource.loop = true;
+        audioSource.Play();
+        audioSource.PlayOneShot(deathSound);
+
         EnemyManager.DestroyAllAI();
         playerController.OnDeath();
         isDead = true;

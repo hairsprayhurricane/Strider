@@ -153,8 +153,8 @@ MonoBehaviour:
   bulletSpread: 5
   mainProjectilePrefab: {fileID: 3755346310232537546, guid: d66dd3a96eebb5244b0880030e8b3087, type: 3}
   isInfiniteAmmo: 0
-  shotSound: {fileID: 0}
+  shotSound: {fileID: 8300000, guid: c8ccb0c7ee7d56640b007257421ebf31, type: 3}
   noAmmoSound: {fileID: 0}
   weaponChangeSound: {fileID: 0}
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 5757849506699906000}
   shakeForceMultiplier: 2

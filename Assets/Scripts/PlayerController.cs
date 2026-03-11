@@ -45,7 +45,6 @@ public class PlayerController : MonoBehaviour
     public bool isPeeking = false;
     private Vector3 peekOffset = Vector3.zero;
 
-    private GameObject rayObject;
     private LineRenderer rayLine;
 
     public PlayerHealth playerHealth;
@@ -286,16 +285,17 @@ public class PlayerController : MonoBehaviour
 
     public void OnDeath()
     {
-        Destroy(rayObject);
+        Destroy(rayLine.gameObject);
         isPeeking = false;
         UpdatePeekOffset();
     }
 
     public void DrawRay(Vector3 start, Vector3 direction)
     {
-        if (!rayObject || !rayLine)
+        if (!rayLine)
         {
-            rayObject = new GameObject("PlayerRay");
+            var rayObject = new GameObject("PlayerRay");
+            rayObject.transform.SetParent(transform);
             rayLine = rayObject.AddComponent<LineRenderer>();
 
             rayLine.positionCount = 2;

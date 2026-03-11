@@ -140,6 +140,14 @@ public class ShaderVolumeManager : MonoBehaviour
         float t = value / 100f;
         filmGrain.intensity.value = Mathf.Lerp(1f, 0f, t);
     }
+    public void SetFilmGrainByValue(float value)
+    {
+        if (filmGrain == null)
+        {
+            Start();
+        }
+        filmGrain.intensity.value = value;
+    }
 
     public IEnumerator DramaticallyIncreaseGain(float force = 5f)
     {

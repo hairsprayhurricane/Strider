@@ -38,7 +38,8 @@ public class LeadProjectile : Projectile
         {
             case "Enemy":
                 var enemy = hit.collider.GetComponent<Enemy>();
-                enemy.TakeDamage(damage);
+                if (isStealthShot && !enemy.enemyAwareness.isAggro) enemy.Die();
+                else enemy.TakeDamage(damage);
                 Destroy(gameObject);
                 break;
             

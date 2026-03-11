@@ -27,6 +27,7 @@ public abstract class PlayerGun : MonoBehaviour
     public GunClass weaponClass;
     public AmmoType weaponAmmo;
     public bool isAutomatic = false;
+    public bool isSilenced = false;
     public bool isActive;
     [Header("Shooting")]
     public short damage = 30;
@@ -75,6 +76,8 @@ public abstract class PlayerGun : MonoBehaviour
     public void AfterFire()
     {
         nextTimeToFire = Time.time + fireRate;
+
+        audioSource.PlayOneShot(shotSound);
 
         if (!isInfiniteAmmo)
         {
