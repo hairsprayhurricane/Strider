@@ -86,6 +86,7 @@
     <Compile Include="Assets\Shaders\VHS\DIstrortion\Distortion.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\GunData.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\Weapons\Shotgun.cs" />
+    <Compile Include="Assets\Scripts\ControllerOST.cs" />
     <Compile Include="Assets\Scripts\Explosion.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\Weapons\PlayerPistol.cs" />
     <Compile Include="Assets\Scripts\LogInterface.cs" />

@@ -77,6 +77,8 @@ public abstract class PlayerGun : MonoBehaviour
     {
         nextTimeToFire = Time.time + fireRate;
 
+        if (!isSilenced) EnemyManager.AggroAll();
+
         audioSource.PlayOneShot(shotSound);
 
         if (!isInfiniteAmmo)

@@ -104,6 +104,7 @@ public class EnemyAwareness : MonoBehaviour
                                 GetComponent<AudioSource>().PlayOneShot(spotSound);
                                 EnemyManager.AggroAll();
                                 ShaderVolumeManager.Instance.SetFilmGrainByValue(0);
+                               
                                 Destroy(spotNoise.gameObject);
                             }
                         }

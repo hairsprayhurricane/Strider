@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 2560
     height: 1349
   m_ShowMode: 4
-  m_Title: Hierarchy
+  m_Title: Game
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 321}
   m_MaxSize: {x: 10000, y: 10000}
@@ -192,8 +192,8 @@ MonoBehaviour:
     y: 0
     width: 309
     height: 772
-  m_MinSize: {x: 201, y: 226}
-  m_MaxSize: {x: 4001, y: 4026}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 14}
@@ -1170,9 +1170,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -27.805717, y: -10.093236, z: -22.424816}
+    m_Target: {x: -15.483814, y: -1.4518994e-16, z: 6.5387735}
     speed: 2
-    m_Value: {x: -27.805717, y: -10.093236, z: -22.424816}
+    m_Value: {x: -1.2291956, y: 3.963476e-17, z: -1.7849908}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1218,13 +1218,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.56614727, y: -0.0019726746, z: 0.0013761324, w: -0.8243274}
+    m_Target: {x: -0.096293926, y: -0.8991976, z: 0.2506203, w: -0.34555784}
     speed: 2
-    m_Value: {x: -0.5661348, y: -0.001972631, z: 0.001376102, w: -0.82430923}
+    m_Value: {x: -0.09629154, y: -0.8991753, z: 0.25061408, w: -0.3455493}
   m_Size:
-    m_Target: 22.036434
+    m_Target: 3.5358875
     speed: 2
-    m_Value: 22.036434
+    m_Value: 3.5358875
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1299,20 +1299,17 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: []
+      m_SelectedIDs:
+      - m_Data: -141938
       m_LastClickedID:
-        m_Data: 0
+        m_Data: -141938
       m_ExpandedIDs:
-      - m_Data: -1830
-      - m_Data: -1826
-      - m_Data: -1504
-      - m_Data: -1496
       - m_Data: -1296
       - m_Data: 46222
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: BloodPuddle(Clone)
+        m_OriginalName: BloodPuddle(Clone)
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
@@ -1320,10 +1317,10 @@ MonoBehaviour:
           width: 0
           height: 0
         m_UserData:
-          m_Data: 0
+          m_Data: -126622
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_TrimLeadingAndTrailingWhitespace: 0
         m_ClientGUIView: {fileID: 8}
@@ -1486,7 +1483,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Resources/Prefabs/Enemies
+    - Assets/Resources/Prefabs/Enemies/Gore
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1496,7 +1493,7 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 85
   m_LastFolders:
-  - Assets/Resources/Prefabs/Enemies
+  - Assets/Resources/Prefabs/Enemies/Gore
   m_LastFoldersGridSize: 85
   m_LastProjectPath: C:\Users\trued\source\repos\Strider
   m_LockTracker:
@@ -1505,23 +1502,23 @@ MonoBehaviour:
   m_FolderTreeState:
     scrollPos: {x: 0, y: 73}
     m_SelectedIDs:
-    - m_Data: 46930
+    - m_Data: 47064
     m_LastClickedID:
-      m_Data: 46930
+      m_Data: 47064
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 46914
-    - m_Data: 46916
-    - m_Data: 46918
-    - m_Data: 46920
-    - m_Data: 46922
-    - m_Data: 46924
-    - m_Data: 46926
-    - m_Data: 46928
     - m_Data: 46930
     - m_Data: 46932
     - m_Data: 46934
     - m_Data: 46936
+    - m_Data: 46938
+    - m_Data: 46940
+    - m_Data: 46942
+    - m_Data: 46944
+    - m_Data: 46946
+    - m_Data: 46948
+    - m_Data: 46950
+    - m_Data: 46952
     - m_Data: 1000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1555,18 +1552,18 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 46914
-    - m_Data: 46916
-    - m_Data: 46918
-    - m_Data: 46920
-    - m_Data: 46922
-    - m_Data: 46924
-    - m_Data: 46926
-    - m_Data: 46928
     - m_Data: 46930
     - m_Data: 46932
     - m_Data: 46934
     - m_Data: 46936
+    - m_Data: 46938
+    - m_Data: 46940
+    - m_Data: 46942
+    - m_Data: 46944
+    - m_Data: 46946
+    - m_Data: 46948
+    - m_Data: 46950
+    - m_Data: 46952
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1593,8 +1590,9 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: []
-    m_LastClickedInstanceID: 0
+    m_SelectedInstanceIDs:
+    - m_Data: -141938
+    m_LastClickedInstanceID: -141938
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs:
     - m_Data: 77780

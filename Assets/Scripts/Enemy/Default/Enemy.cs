@@ -181,7 +181,8 @@ public class Enemy : MonoBehaviour
             enemyAwareness.isAggro = true;
         }
 
-        enemyAwareness.TriggerNearbyEnemies();
+        //enemyAwareness.TriggerNearbyEnemies();
+        //EnemyManager.AggroAll();
         enemyHealth -= damage;
 
         _ = SpawnRedSquaresAsync().ContinueWith(t =>
@@ -273,7 +274,7 @@ public class Enemy : MonoBehaviour
         {
             GameObject bloodPuddle = Instantiate(
                 bloodPuddlePrefab,
-                new Vector3(groundHit.point.x, groundHit.point.y-1.5f, groundHit.point.z),
+                new Vector3(groundHit.point.x, groundHit.point.y, groundHit.point.z),
                 Quaternion.LookRotation(groundHit.normal)
             );
 
@@ -330,7 +331,7 @@ public class Enemy : MonoBehaviour
                 if (Mathf.Abs(hit.normal.y) >= 0.2f)
                     continue;
 
-                Vector3 splatterPos = hit.point + hit.normal * 0.01f;
+                Vector3 splatterPos = hit.point + hit.normal * 0.045f;
                 Quaternion splatterRot = Quaternion.LookRotation(hit.normal);
                 GameObject splatterPuddle = Instantiate(bloodPuddlePrefab, splatterPos, splatterRot);
 

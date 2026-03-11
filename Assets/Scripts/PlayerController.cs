@@ -288,6 +288,7 @@ public class PlayerController : MonoBehaviour
         Destroy(rayLine.gameObject);
         isPeeking = false;
         UpdatePeekOffset();
+        ControllerOST.Instance.Stop();
     }
 
     public void DrawRay(Vector3 start, Vector3 direction)
