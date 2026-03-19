@@ -37,4 +37,9 @@ public class RocketLauncher : PlayerGun
 
         AfterFire();
     }
+
+    public override string GetDescription()
+    {
+        return "-";
+    }
 }

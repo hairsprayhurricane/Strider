@@ -2955,6 +2955,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1625625657451953233, guid: c8c338e760e1447459990318deb2a5d4, type: 3}
+      propertyPath: thunderbolt
+      value: 
+      objectReference: {fileID: 2899056286009121338, guid: 4edc7b19a513df24d8f4673934ce0473, type: 3}
     - target: {fileID: 5993130955708493928, guid: c8c338e760e1447459990318deb2a5d4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.07
@@ -2995,6 +2999,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6629785040170897429, guid: c8c338e760e1447459990318deb2a5d4, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 5a43260d2b02f2340ac1d324b80f7f9e, type: 2}
     - target: {fileID: 7032089119408612586, guid: c8c338e760e1447459990318deb2a5d4, type: 3}
       propertyPath: m_Name
       value: Player

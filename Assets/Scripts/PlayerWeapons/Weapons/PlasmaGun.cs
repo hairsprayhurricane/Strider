@@ -39,4 +39,9 @@ public class PlasmaGun : PlayerGun
 
         AfterFire();
     }
+
+    public override string GetDescription()
+    {
+        return "-";
+    }
 }

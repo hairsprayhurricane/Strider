@@ -32,4 +32,9 @@ public class Shotgun : PlayerGun
 
         return (baseDir + right * randCircle.x + up * randCircle.y).normalized;
     }
+
+    public override string GetDescription()
+    {
+        return "-";
+    }
 }

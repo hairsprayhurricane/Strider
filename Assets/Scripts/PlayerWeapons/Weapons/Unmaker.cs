@@ -39,4 +39,9 @@ public class Unmaker : PlayerGun
 
         AfterFire();
     }
+
+    public override string GetDescription()
+    {
+        return "-";
+    }
 }

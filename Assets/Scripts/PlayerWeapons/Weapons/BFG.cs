@@ -39,4 +39,9 @@ public class BFG : PlayerGun
 
         AfterFire();
     }
+
+    public override string GetDescription()
+    {
+        return "-";
+    }
 }

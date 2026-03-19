@@ -37,4 +37,9 @@ public class PlayerPistol : PlayerGun
 
         AfterFire();
     }
+
+    public override string GetDescription()
+    {
+        return "-";
+    }
 }

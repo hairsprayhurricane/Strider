@@ -37,4 +37,9 @@ public class MachineGun : PlayerGun
 
         AfterFire();
     }
+
+    public override string GetDescription()
+    {
+        return "-";
+    }
 }

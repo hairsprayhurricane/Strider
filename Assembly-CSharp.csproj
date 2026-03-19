@@ -53,6 +53,8 @@
     <Compile Include="Assets\Scripts\PlayerWeapons\GunController.cs" />
     <Compile Include="Assets\Scripts\SpriteRotator.cs" />
     <Compile Include="Assets\Scripts\RedBarrel.cs" />
+    <Compile Include="Assets\Scripts\PlayerWeapons\Weapons\Thunderbolt.cs" />
+    <Compile Include="Assets\Scripts\Projectiles\FireProjectile.cs" />
     <Compile Include="Assets\Shaders\VHS\BleedingColors\BleedingColorsRendererFeature.cs" />
     <Compile Include="Assets\Scripts\Enemy\Default\EnemyAi.cs" />
     <Compile Include="Assets\Scripts\Enemy\Default\EnemyAwarness.cs" />
@@ -74,6 +76,7 @@
     <Compile Include="Assets\Scripts\Enemy\Default\Enemy.cs" />
     <Compile Include="Assets\Scripts\ClassicRandom.cs" />
     <Compile Include="Assets\Shaders\VHS\DIstrortion\DistortionRendererFeature.cs" />
+    <Compile Include="Assets\Scripts\PlayerWeapons\Weapons\FlameThrower.cs" />
     <Compile Include="Assets\Shaders\VHS\Pixel Filter\PixelizePostProcessRendererFeature.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\WeaponPickup.cs" />
     <Compile Include="Assets\Scripts\Projectiles\Projectile.cs" />

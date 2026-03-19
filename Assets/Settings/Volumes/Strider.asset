@@ -79,6 +79,29 @@ MonoBehaviour:
   saturation:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &-6763085868566610563
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78091823f7344e448a74cc21bb4e74cb, type: 3}
+  m_Name: Distortion
+  m_EditorClassIdentifier: Assembly-CSharp::Distortion
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0
+  valueX:
+    m_OverrideState: 1
+    m_Value: 4.51
+  displacementTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: b40ff1895b338f543bef5ebad2c21b91, type: 3}
+    dimension: 1
 --- !u!114 &-5502481105613063722
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -142,6 +165,25 @@ MonoBehaviour:
   gain:
     m_OverrideState: 1
     m_Value: {x: 1, y: 1, z: 1, w: 0.1664685}
+--- !u!114 &-4037156895569699794
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea0446148bd28df47a1534ebd80c33d9, type: 3}
+  m_Name: BleedingColors
+  m_EditorClassIdentifier: Assembly-CSharp::BleedingColors
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0
+  shift:
+    m_OverrideState: 1
+    m_Value: 0.2
 --- !u!114 &-3739584515578340916
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -246,9 +288,8 @@ MonoBehaviour:
   - {fileID: 3726976508665199242}
   - {fileID: -5029076490392983748}
   - {fileID: -5502481105613063722}
-  - {fileID: 5653769172090582671}
-  - {fileID: -1633332228367935835}
-  - {fileID: 8185989028527234576}
+  - {fileID: -6763085868566610563}
+  - {fileID: -4037156895569699794}
 --- !u!114 &1467200817115378717
 MonoBehaviour:
   m_ObjectHideFlags: 3

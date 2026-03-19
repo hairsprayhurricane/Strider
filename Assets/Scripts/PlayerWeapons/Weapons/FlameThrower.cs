@@ -37,4 +37,9 @@ public class FlameThrower : PlayerGun
 
         AfterFire();
     }
+
+    public override string GetDescription()
+    {
+        return "-";
+    }
 }

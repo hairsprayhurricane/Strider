@@ -89,7 +89,7 @@ public class FireProjectile : Projectile
         while(!enemy.isDead)
         {
             yield return new WaitForSeconds(ClassicRandom.value);
-            enemy.TakeDamage(damage/2);
+            enemy.TakeDamage((short)(damage/2));
         }
     }
     

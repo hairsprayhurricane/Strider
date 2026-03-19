@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
-    public const int MAX_WEAPONS = 4;
+    public const int MAX_WEAPONS = 10;
 
     private Dictionary<int, PlayerGun> playerGuns = new Dictionary<int, PlayerGun>();
 
@@ -37,6 +37,8 @@ public class GunController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha6)) SwitchWeapon(6);
         if (Input.GetKeyDown(KeyCode.Alpha7)) SwitchWeapon(7);
         if (Input.GetKeyDown(KeyCode.Alpha8)) SwitchWeapon(8);
+        if (Input.GetKeyDown(KeyCode.Alpha9)) SwitchWeapon(9);
+        if (Input.GetKeyDown(KeyCode.Alpha0)) SwitchWeapon(0);
     }
 
     public void AddWeapon(PlayerGun gunPrefab, byte index)

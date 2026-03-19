@@ -72,6 +72,7 @@ public abstract class PlayerGun : MonoBehaviour
     }
 
     public abstract void Fire();
+    public abstract string GetDescription();
 
     public void AfterFire()
     {
