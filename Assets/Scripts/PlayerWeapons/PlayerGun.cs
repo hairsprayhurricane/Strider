@@ -12,7 +12,13 @@ public enum GunType
         RocketLauncher,
         PlasmaGun,
         BFG,
-        Unmaker
+        Unmaker,
+
+        // Elemental
+        ThunderMaker,
+        FireThrower,
+        //ShadowSummoner,
+        
     }
     public enum GunClass
     {

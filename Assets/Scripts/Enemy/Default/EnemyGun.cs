@@ -90,12 +90,15 @@ public class EnemyGun : MonoBehaviour
 
     public virtual IEnumerator ShootAtPlayer(Collider target, int amount)
     {
+        if(PlayerController.Instance.playerHealth.isDead) yield break;
+        
         isReadyToShoot = false;
 
         yield return new WaitForSeconds(ClassicRandom.value);
 
         for (int i = 0; i < amount; i++)
         {
+
             var waitTime = ClassicRandom.value / 2;
 
             StartCoroutine(LookAtPlayer(target, waitTime));

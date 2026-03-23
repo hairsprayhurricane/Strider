@@ -69,6 +69,7 @@
     },
     "dotnet.defaultSolution": "Strider.slnx",
     "cSpell.words": [
+        "fabs",
         "Unmaker"
     ]
 }

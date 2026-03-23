@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8883237162616027969}
   - component: {fileID: 5757849506699906000}
-  - component: {fileID: 2899056286009121338}
+  - component: {fileID: 3272216196226651822}
   m_Layer: 0
-  m_Name: ThunderMaker
+  m_Name: FireThrower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -130,7 +130,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &2899056286009121338
+--- !u!114 &3272216196226651822
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -139,36 +139,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 2431328828240510107}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db3923477ac333e4383a06da0f1952a1, type: 3}
+  m_Script: {fileID: 11500000, guid: 09ecd2e734def2f418a6bcaae96d425b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Thunderbolt
-  weaponType: 2
+  m_EditorClassIdentifier: '::'
+  weaponType: 8
   weaponClass: 2
   weaponAmmo: 3
   isAutomatic: 1
   isSilenced: 1
   isActive: 0
-  damage: 30
+  damage: 10
   range: 100
-  fireRate: 0.1
-  bulletSpread: 1
-  mainProjectilePrefab: {fileID: 0}
+  fireRate: 0.085
+  bulletSpread: 5
+  mainProjectilePrefab: {fileID: 8818514799727721213, guid: 7dd22580e33389841967248d9029ca84, type: 3}
   isInfiniteAmmo: 1
   shotSound: {fileID: 0}
   noAmmoSound: {fileID: 0}
   weaponChangeSound: {fileID: 0}
-  audioSource: {fileID: 0}
-  shakeForceMultiplier: 6
-  maxLength: 30
-  segmentLength: 2
-  maxSegments: 20
-  displacement: 1.5
-  fadeTime: 0.1
-  lightningMainMat: {fileID: 2100000, guid: f61e239ea9d7f004996b39d19b3440f4, type: 2}
-  maxBranchDepth: 2
-  branchChance: 0.3
-  branchLengthMultiplier: 0.45
-  branchDisplacementMultiplier: 1.4
-  lightRange: 10
-  lightIntensity: 10
-  lightColor: {r: 0.6, g: 0.75, b: 1, a: 1}
+  audioSource: {fileID: 5757849506699906000}
+  shakeForceMultiplier: 1

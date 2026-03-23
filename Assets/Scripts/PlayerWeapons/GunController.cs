@@ -67,6 +67,7 @@ public class GunController : MonoBehaviour
         PlayerGun newGun = Instantiate(gunPrefab, weaponHolder);
         newGun.transform.localPosition = Vector3.zero;
         newGun.isActive = false;
+        newGun.gameObject.name = gunPrefab.name;
 
         playerGuns.Add(index, newGun);
 

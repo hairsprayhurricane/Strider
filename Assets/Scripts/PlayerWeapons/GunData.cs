@@ -10,7 +10,8 @@ public class GunData : MonoBehaviour
     public BFG bfgPrefab;
     public Unmaker unmakerPrefab;
     
-    public Thunderbolt thunderbolt;
+    public Thunderbolt thunderBolt;
+    public FireThrower fireThrower;
 
     GunController gunController;
 
@@ -27,6 +28,7 @@ public class GunData : MonoBehaviour
         gunController.AddWeapon(bfgPrefab, 6);
         gunController.AddWeapon(unmakerPrefab, 7);
         */
-        gunController.AddWeapon(thunderbolt, 1);
+        gunController.AddWeapon(thunderBolt, 1);
+        gunController.AddWeapon(fireThrower, 2);
     }
 }

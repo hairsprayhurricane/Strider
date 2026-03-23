@@ -61,13 +61,13 @@ public abstract class Projectile : MonoBehaviour
         var p = Instantiate(prefab, pos, rot).GetComponent<Projectile>();
         p.summoner = owner;
         p.isStealthShot = stealthGun;
+        bulletRegister.Add(p);
         if (damage != default) p.damage = damage;
         return p;
     }
 
-    protected void Start()
+    public virtual void Start()
     {
-        bulletRegister.Add(this);
         Destroy(gameObject, timeBeforeDestroy);
         //prefabPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(gameObject);
 

@@ -110,25 +110,23 @@ public class Thunderbolt : PlayerGun
         lr.SetPositions(points.ToArray());
     }
 
-    void SpawnBranch(Vector3 origin, Vector3 parentDir, float parentLength,
-                     float disp, int depth)
+    void SpawnBranch(Vector3 origin, Vector3 parentDir, float parentLength, float disp, int depth)
     {
         float yaw   = ClassicRandom.Range(-55f, 55f);
         float pitch = ClassicRandom.Range(-35f, 35f);
         Vector3 branchDir = Quaternion.Euler(pitch, yaw, 0f) * parentDir;
         branchDir.Normalize();
 
-        float branchLength = parentLength * branchLengthMultiplier
-                             * ClassicRandom.Range(0.5f, 1f);
+        float branchLength = parentLength * branchLengthMultiplier * ClassicRandom.Range(0.5f, 1f);
         Vector3 branchEnd = origin + branchDir * branchLength;
 
         LineRenderer lr = CreateLightningRenderer(isBranch: true);
-        GenerateLightningBolt(lr, origin, branchEnd,
-                              disp * branchDisplacementMultiplier, depth + 1);
+        GenerateLightningBolt(lr, origin, branchEnd, disp * branchDisplacementMultiplier, depth + 1);
+        SpawnLightningLight(origin);
         StartCoroutine(FadeLightning(lr));
     }
 
-    // ─── фабрики ────────────────────────────────────────────────────────────
+    // ─── fabs ────────────────────────────────────────────────────────────
 
     LineRenderer CreateLightningRenderer(bool isBranch = false)
     {
@@ -161,7 +159,7 @@ public class Thunderbolt : PlayerGun
         StartCoroutine(FadeLight(light, fadeTime * 2f));
     }
 
-    // ─── корутины ───────────────────────────────────────────────────────────
+    // ─── cors ───────────────────────────────────────────────────────────
 
     IEnumerator FadeLightning(LineRenderer lr)
     {
@@ -191,7 +189,7 @@ public class Thunderbolt : PlayerGun
         Destroy(light.gameObject);
     }
 
-    // ─── урон ───────────────────────────────────────────────────────────────
+    // ─── damage ───────────────────────────────────────────────────────────────
 
     void ApplyDamage(RaycastHit hit)
     {

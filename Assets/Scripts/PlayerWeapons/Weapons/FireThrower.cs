@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class FlameThrower : PlayerGun
+public class FireThrower : PlayerGun
 {
     public override void Fire()
     {
         audioSource.Stop();
         //audioSource.PlayOneShot(shotSound);
 
-        Vector3 spawnPos = playerPos.position;
+        Vector3 spawnPos = playerPos.position+playerPos.forward;
         Vector3 baseDir = playerPos.forward;
         baseDir.y = 0f;
         baseDir.Normalize();

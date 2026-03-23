@@ -1739,7 +1739,7 @@ GameObject:
   - component: {fileID: 1413108793}
   - component: {fileID: 1413108792}
   - component: {fileID: 1413108791}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Plane
   m_TagString: Environment
   m_Icon: {fileID: 0}
@@ -2955,6 +2955,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1625625657451953233, guid: c8c338e760e1447459990318deb2a5d4, type: 3}
+      propertyPath: fireThrower
+      value: 
+      objectReference: {fileID: 3272216196226651822, guid: a21d208fd4419cd41b450b44084d51ef, type: 3}
+    - target: {fileID: 1625625657451953233, guid: c8c338e760e1447459990318deb2a5d4, type: 3}
+      propertyPath: thunderBolt
+      value: 
+      objectReference: {fileID: 2899056286009121338, guid: 4edc7b19a513df24d8f4673934ce0473, type: 3}
     - target: {fileID: 1625625657451953233, guid: c8c338e760e1447459990318deb2a5d4, type: 3}
       propertyPath: thunderbolt
       value: 

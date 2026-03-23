@@ -1,9 +1,12 @@
 using System.Collections;
 using UnityEngine;
 
-public class FireProjectile : Projectile
+public class Flame : Projectile
 {
-    public FireProjectile(
+    public GameObject particle;
+    public Vector3 currentScale;
+    public Vector3 defaultScale;
+    public Flame(
         Vector3 position,
         Quaternion rotation,
         Vector3 scale,
@@ -15,9 +18,9 @@ public class FireProjectile : Projectile
     {
     }
 
-    void Start()
+    public override void Start()
     {
-        base.Start();
+        //base.Start();
 
         transform.localScale *= ClassicRandom.value;
 
@@ -31,6 +34,17 @@ public class FireProjectile : Projectile
 
         lastPosition = transform.position;
         startPosition = transform.position;
+
+        Destroy(gameObject, timeBeforeDestroy+ClassicRandom.value);
+
+
+
+        defaultScale = gameObject.transform.localScale;
+        currentScale = defaultScale / 2.5f;
+        gameObject.transform.localScale = currentScale;
+        SpawnParticles();
+        StartCoroutine(ParticleCoroutine());
+        StartCoroutine(ScaleCoroutine());
 
     }
 
@@ -57,12 +71,11 @@ public class FireProjectile : Projectile
                 if (isStealthShot && !enemy.enemyAwareness.isAggro) enemy.Die();
                 else enemy.TakeDamage(damage);
                 enemy.StartCoroutine(DamageEnemyCor(enemy));
-                //Destroy(gameObject);
+                Destroy(gameObject);
                 break;
             
             case "Player":
                 hit.collider.GetComponent<PlayerHealth>().DamagePlayer(damage);
-                //Destroy(gameObject);
                 break;
 
             case "ExplosiveObject":
@@ -72,11 +85,9 @@ public class FireProjectile : Projectile
                     barrel.health -= damage;
                     if (barrel.health <= 0) barrel.Boom();
                 }
-                //Destroy(gameObject);
                 break;
 
             case "Environment":
-                //Destroy(gameObject);
                 break;
 
             default:
@@ -88,9 +99,56 @@ public class FireProjectile : Projectile
     {
         while(!enemy.isDead)
         {
-            yield return new WaitForSeconds(ClassicRandom.value);
-            enemy.TakeDamage((short)(damage/2));
+            yield return new WaitForSeconds(ClassicRandom.value*3);
+            enemy.TakeDamage(ClassicRandom.RangeShort(5,10));
         }
+
+        //Destroy(gameObject);
+    }
+
+    // -- legacy
+
+    async void SpawnParticles()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            SpriteRenderer sr = particle.GetComponent<SpriteRenderer>();
+
+            GameObject spawnedParticle = Instantiate(particle, new Vector3(
+                transform.position.x + ClassicRandom.Range(-2, 2), 
+                transform.position.y + ClassicRandom.Range(-2, 2), 
+                transform.position.z + ClassicRandom.Range(-2, 2)), 
+                Quaternion.identity);
+            
+            spawnedParticle.GetComponent<SpriteRenderer>().color = new Color(1, Random.Range(0f, 1f), 0);
+
+            Vector3 kickDirection = -Camera.main.transform.forward;
+            spawnedParticle.GetComponent<Rigidbody>().AddForce(kickDirection * 5, ForceMode.Impulse);
+
+            Destroy(spawnedParticle, ClassicRandom.value);
+        }
+    }
+
+    IEnumerator ParticleCoroutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.4f);
+            SpawnParticles();
+        }
+    }
+    IEnumerator ScaleCoroutine()
+    {
+        float duration = 0.5f;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            gameObject.transform.localScale = Vector3.Lerp(currentScale, defaultScale, t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        gameObject.transform.localScale = defaultScale;
     }
     
 }
