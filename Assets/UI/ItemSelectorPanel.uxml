@@ -1,0 +1,42 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+
+    <Style src="project://database/Assets/UI/WeaponSelector.uss" />
+
+    <ui:VisualElement name="item-selector" class="panel">
+
+        <ui:VisualElement class="panel-title-row">
+            <ui:Label text="▸ ITEMS" class="panel-title" />
+            <ui:Label text="NOT IMPLEMENTED" class="not-implemented-badge" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="items-grid">
+
+            <ui:VisualElement class="item-slot item-slot--empty">
+                <ui:Label text="?" class="item-slot-placeholder" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="item-slot item-slot--empty">
+                <ui:Label text="?" class="item-slot-placeholder" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="item-slot item-slot--empty">
+                <ui:Label text="?" class="item-slot-placeholder" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="item-slot item-slot--empty">
+                <ui:Label text="?" class="item-slot-placeholder" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="item-slot item-slot--empty">
+                <ui:Label text="?" class="item-slot-placeholder" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="item-slot item-slot--empty">
+                <ui:Label text="?" class="item-slot-placeholder" />
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>

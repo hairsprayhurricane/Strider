@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+
+    <Style src="project://database/Assets/UI/WeaponSelector.uss" />
+
+    <ui:VisualElement name="weapon-selector" class="panel">
+
+        <ui:VisualElement class="panel-title-row">
+            <ui:Label text="▸ WEAPONS" class="panel-title" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="slots-container" class="slots-container"/>
+
+    </ui:VisualElement>
+
+</ui:UXML>

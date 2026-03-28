@@ -19,16 +19,18 @@ public class GunData : MonoBehaviour
     {
         gunController = GunController.Instance;
 
-        /*gunController.AddWeapon(playerPistolPrefab, 1);
-        gunController.AddWeapon(shotgunPrefab, 2);
-        gunController.AddWeapon(machineGunPrefab, 3);
-        gunController.AddWeapon(rocketLauncherPrefab, 4);
+        gunController.AddWeapon(playerPistolPrefab);
+        gunController.AddWeapon(shotgunPrefab);
+        gunController.AddWeapon(machineGunPrefab);
+        gunController.AddWeapon(rocketLauncherPrefab);
         
+        /*
         gunController.AddWeapon(plasmaGunPrefab, 5);
         gunController.AddWeapon(bfgPrefab, 6);
         gunController.AddWeapon(unmakerPrefab, 7);
         */
-        gunController.AddWeapon(thunderBolt, 1);
-        gunController.AddWeapon(fireThrower, 2);
+
+        gunController.AddWeapon(thunderBolt);
+        gunController.AddWeapon(fireThrower);
     }
 }

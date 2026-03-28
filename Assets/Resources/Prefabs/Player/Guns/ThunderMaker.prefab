@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db3923477ac333e4383a06da0f1952a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Thunderbolt
-  weaponType: 2
+  weaponType: 7
   weaponClass: 2
   weaponAmmo: 3
   isAutomatic: 1

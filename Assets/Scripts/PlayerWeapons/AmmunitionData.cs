@@ -70,4 +70,11 @@ public class AmmunitionData
             }
         }
     }
+
+    public int GetMaxAmmo(AmmoType type)
+    {
+        foreach (var entry in ammoEntries)
+            if (entry.type == type) return entry.maxAmount;
+        return 0;
+    }
 }

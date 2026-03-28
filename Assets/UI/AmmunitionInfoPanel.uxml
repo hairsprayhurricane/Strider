@@ -1,0 +1,42 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="project://database/Assets/UI/WeaponSelector.uss" />
+    <ui:VisualElement name="ammo-info" class="panel">
+
+        <ui:VisualElement class="panel-title-row">
+            <ui:Label text="▸ AMMO" class="panel-title" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="ammo-row">
+            <ui:Label text="LEAD" class="ammo-type-label" />
+            <ui:VisualElement class="ammo-bar-bg">
+                <ui:VisualElement name="bar-lead" class="ammo-bar ammo-bar--lead" />
+            </ui:VisualElement>
+            <ui:Label name="count-lead" text="0 / 0" class="ammo-count-label" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="ammo-row">
+            <ui:Label text="BUCKSHOT" class="ammo-type-label" />
+            <ui:VisualElement class="ammo-bar-bg">
+                <ui:VisualElement name="bar-buckshot" class="ammo-bar ammo-bar--buckshot" />
+            </ui:VisualElement>
+            <ui:Label name="count-buckshot" text="0 / 0" class="ammo-count-label" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="ammo-row">
+            <ui:Label text="ROCKET" class="ammo-type-label" />
+            <ui:VisualElement class="ammo-bar-bg">
+                <ui:VisualElement name="bar-rocket" class="ammo-bar ammo-bar--rocket" />
+            </ui:VisualElement>
+            <ui:Label name="count-rocket" text="0 / 0" class="ammo-count-label" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="ammo-row">
+            <ui:Label text="ENERGY" class="ammo-type-label" />
+            <ui:VisualElement class="ammo-bar-bg">
+                <ui:VisualElement name="bar-energetic" class="ammo-bar ammo-bar--energetic" />
+            </ui:VisualElement>
+            <ui:Label name="count-energetic" text="0 / 0" class="ammo-count-label" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

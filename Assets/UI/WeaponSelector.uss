@@ -1,0 +1,202 @@
+/* ================================================================
+   WeaponSelector.uss
+   ================================================================ */
+
+/* ---- PANEL (базовые общие стили) ---- */
+
+.panel {
+    background-color: rgba(8, 8, 8, 0.88);
+    border-width: 1px;
+    border-color: rgba(255, 185, 50, 0.2);
+    border-radius: 6px;
+    padding: 18px 21px 21px 21px;
+    flex-direction: column;
+}
+
+.panel-title-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom-width: 1px;
+    border-color: rgba(255, 185, 50, 0.12);
+}
+
+.panel-title {
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: rgba(255, 185, 50, 0.55);
+    letter-spacing: 2px;
+}
+
+/* ---- WEAPON PANEL — широкий горизонтальный ---- */
+
+#weapon-selector {
+    width: 960px;
+}
+
+#weapon-selector .slots-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+#weapon-selector .weapon-slot {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 72px;
+    padding: 8px 6px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0);
+    background-color: rgba(255, 255, 255, 0.03);
+    transition-property: background-color, border-color;
+    transition-duration: 0.12s;
+}
+
+#weapon-selector .weapon-slot:hover {
+    background-color: rgba(255, 185, 50, 0.07);
+    border-color: rgba(255, 185, 50, 0.2);
+}
+
+#weapon-selector .weapon-slot--active {
+    background-color: rgba(255, 185, 50, 0.12);
+    border-color: rgba(255, 185, 50, 0.5);
+}
+
+#weapon-selector .weapon-slot--empty {
+    opacity: 0.25;
+}
+
+#weapon-selector .slot-number {
+    font-size: 10px;
+    color: rgba(255, 185, 50, 0.4);
+    -unity-text-align: upper-center;
+    width: 100%;
+    margin-bottom: 4px;
+}
+
+#weapon-selector .weapon-slot--active .slot-number {
+    color: rgba(255, 185, 50, 0.95);
+}
+
+#weapon-selector .weapon-name {
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.55);
+    -unity-text-align: middle-center;
+    white-space: normal;
+    width: 100%;
+    flex-grow: 1;
+}
+
+#weapon-selector .weapon-name--empty {
+    color: rgba(255, 255, 255, 0.18);
+    -unity-font-style: italic;
+}
+
+#weapon-selector .weapon-slot--active .weapon-name {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+#weapon-selector .weapon-ammo {
+    font-size: 10px;
+    color: rgba(255, 185, 50, 0.5);
+    -unity-text-align: lower-center;
+    width: 100%;
+    margin-top: 4px;
+}
+
+#weapon-selector .weapon-slot--active .weapon-ammo {
+    color: rgba(255, 185, 50, 1.0);
+}
+
+/* ---- AMMO PANEL — вертикальный ---- */
+
+#ammo-info {
+    width: 180px;
+}
+
+#ammo-info .ammo-row {
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 16px;
+}
+
+#ammo-info .ammo-row:last-child {
+    margin-bottom: 0;
+}
+
+#ammo-info .ammo-type-label {
+    font-size: 9px;
+    color: rgba(255, 185, 50, 0.45);
+    letter-spacing: 1px;
+    -unity-text-align: middle-left;
+    margin-bottom: 5px;
+}
+
+#ammo-info .ammo-bar-bg {
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+#ammo-info .ammo-bar {
+    height: 6px;
+    border-radius: 3px;
+    width: 100%;
+}
+
+#ammo-info .ammo-count-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    -unity-text-align: middle-right;
+}
+
+.ammo-bar--lead      { background-color: rgba(210, 210, 210, 0.8); }
+.ammo-bar--buckshot  { background-color: rgba(210, 155, 60,  0.9); }
+.ammo-bar--rocket    { background-color: rgba(220, 75,  55,  0.9); }
+.ammo-bar--energetic { background-color: rgba(80,  165, 255, 0.9); }
+
+/* ---- ITEMS PANEL — широкий горизонтальный ---- */
+
+#item-selector {
+    width: 630px;
+}
+
+.not-implemented-badge {
+    font-size: 9px;
+    color: rgba(255, 185, 50, 0.22);
+    -unity-font-style: italic;
+}
+
+#item-selector .items-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+#item-selector .item-slot {
+    width: 69px;
+    height: 69px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    align-items: center;
+    justify-content: center;
+}
+
+#item-selector .item-slot--empty {
+    opacity: 0.28;
+}
+
+#item-selector .item-slot-placeholder {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.25);
+    -unity-text-align: middle-center;
+}

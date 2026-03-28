@@ -122,4 +122,11 @@ public abstract class PlayerGun : MonoBehaviour
         return weaponType;
     }
 
+    public virtual string GetGunName() => gameObject.name;
+
+    public virtual string GetAmmoDisplayString(GunController gc)
+    {
+        return "";
+    }
+
 }

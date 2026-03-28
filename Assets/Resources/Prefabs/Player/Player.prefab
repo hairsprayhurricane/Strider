@@ -80,6 +80,8 @@ MonoBehaviour:
   plasmaGunPrefab: {fileID: 0}
   bfgPrefab: {fileID: 0}
   unmakerPrefab: {fileID: 0}
+  thunderBolt: {fileID: 2899056286009121338, guid: 4edc7b19a513df24d8f4673934ce0473, type: 3}
+  fireThrower: {fileID: 3272216196226651822, guid: a21d208fd4419cd41b450b44084d51ef, type: 3}
 --- !u!114 &9119404945859127563
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,7 +221,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 5a43260d2b02f2340ac1d324b80f7f9e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

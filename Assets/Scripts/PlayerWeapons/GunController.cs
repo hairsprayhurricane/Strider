@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
-    public const int MAX_WEAPONS = 10;
+    public const int MAX_WEAPONS = 9;
 
     private Dictionary<int, PlayerGun> playerGuns = new Dictionary<int, PlayerGun>();
 
@@ -41,17 +41,56 @@ public class GunController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha0)) SwitchWeapon(0);
     }
 
-    public void AddWeapon(PlayerGun gunPrefab, byte index)
+    // -- adding and creating new weapon -----------------------------
+
+    public void AddWeapon(PlayerGun gunPrefab, byte index, bool addWeaponIfCopyExist = false)
+    {
+        if (playerGuns.ContainsKey(index))
+        {
+            Debug.Log("Slot already occupied");
+            return;
+        }
+
+        CheckAppendWeapon(gunPrefab, index, addWeaponIfCopyExist);
+    }
+    
+    public void AddWeapon(PlayerGun gunPrefab, bool addWeaponIfCopyExist = false)
+    {
+        byte index = 0;
+
+        for(byte i = 1; i < MAX_WEAPONS; i++)
+        {
+            if (!playerGuns.ContainsKey(i))
+            {
+                index = i;
+                break;
+            } 
+            else if (playerGuns.ContainsKey(i))
+            {
+                continue;
+            }
+
+            if (i == playerGuns.Count)
+            {
+                Debug.Log("All slots already occupied");
+                return;
+            }
+        }
+
+        CheckAppendWeapon(gunPrefab, index, addWeaponIfCopyExist);
+    }
+
+    private void CheckAppendWeapon(PlayerGun gunPrefab, byte index, bool addWeaponIfCopyExist)
     {
         if (playerGuns.Count >= MAX_WEAPONS)
         {
             Debug.Log("Weapon slots full");
             return;
         }
-
-        if (playerGuns.ContainsKey(index))
+        
+        if (index >= MAX_WEAPONS)
         {
-            Debug.Log("Slot already occupied");
+            Debug.Log("Weapon index is too big for inventory");
             return;
         }
 
@@ -59,11 +98,19 @@ public class GunController : MonoBehaviour
         {
             if (gun.GetGunType() == gunPrefab.GetGunType())
             {
-                Debug.Log("Player already has this weapon:" + gunPrefab.GetGunType());
-                return;
+                if (!addWeaponIfCopyExist)
+                {
+                    Debug.Log("Player already has this weapon:" + gunPrefab.GetGunType());
+                    return;
+                }
             }
         }
 
+        AddWeaponToRegister(gunPrefab, index);
+    }
+
+    private void AddWeaponToRegister(PlayerGun gunPrefab, byte index)
+    {
         PlayerGun newGun = Instantiate(gunPrefab, weaponHolder);
         newGun.transform.localPosition = Vector3.zero;
         newGun.isActive = false;
@@ -77,6 +124,8 @@ public class GunController : MonoBehaviour
             ActivateGun(index);
         }
     }
+
+    // -- helping --------------------------
 
     public void SwitchWeapon(int index)
     {
@@ -124,4 +173,14 @@ public class GunController : MonoBehaviour
             item.Value.isActive = false;
         }
     }
+
+    public PlayerGun TryGetWeaponAt(int index)
+    {
+        playerGuns.TryGetValue(index, out PlayerGun gun);
+        return gun;
+    }
+
+    public int GetCurrentGunIndex() => currentGunIndex;
+
+    public int GetMaxAmmo(AmmoType type) => ammunitionData.GetMaxAmmo(type);
 }
