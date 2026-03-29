@@ -63,10 +63,10 @@ public class PlayerHealth : MonoBehaviour
 
         if (lastDamageType == LastDamageType.explosion)
         {
-            StartCoroutine(ShaderVolumeManager.Instance.DramaticallyIncreaseBleedingColors(damage));
+            //StartCoroutine(ShaderVolumeManager.Instance.DramaticallyIncreaseBleedingColors(damage));
             //StartCoroutine(ShaderVolumeManager.Instance.DramaticallyIncreaseChromaticAberration());
-            StartCoroutine(ShaderVolumeManager.Instance.DramaticallyChangeColorAdjustments(Color.red, 1.5f));
-            StartCoroutine(ShaderVolumeManager.Instance.DramaticallyIncreaseDistortion(damage));
+            //StartCoroutine(ShaderVolumeManager.Instance.DramaticallyChangeColorAdjustments(Color.red, 1.5f));
+            //StartCoroutine(ShaderVolumeManager.Instance.DramaticallyIncreaseDistortion(damage));
 
         }
 

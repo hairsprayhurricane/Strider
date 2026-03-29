@@ -13,6 +13,8 @@ public class GunController : MonoBehaviour
 
     public Transform weaponHolder;
 
+    public bool isWeaponHidden = false;
+
     private static GunController _instance;
     public static GunController Instance { get { return _instance; } }
 
@@ -136,7 +138,7 @@ public class GunController : MonoBehaviour
 
         currentGunIndex = index;
 
-        ActivateGun(index);
+        if(!isWeaponHidden) ActivateGun(index);
     }
 
     private void ActivateGun(int index)
@@ -172,6 +174,14 @@ public class GunController : MonoBehaviour
         {
             item.Value.isActive = false;
         }
+    }
+    public void ActivateLastWeapon()
+    {
+        playerGuns[currentGunIndex].isActive = true;
+    }
+    public void DeactivateLastWeapon()
+    {
+        playerGuns[currentGunIndex].isActive = false;
     }
 
     public PlayerGun TryGetWeaponAt(int index)

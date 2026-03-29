@@ -27,10 +27,22 @@ public class CanvasSelectorController : MonoBehaviour
     private int activeSlotIndex = -1;
 
     private Coroutine[] slideCoroutines = new Coroutine[3];
-    private bool isOpen = false;
+    public bool isOpen = false;
+
+    private static CanvasSelectorController _instance;
+    public static CanvasSelectorController Instance { get { return _instance; } }
 
     void Awake()
     {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+
         root = uiDocument.rootVisualElement;
         BuildPanels();
     }
@@ -164,6 +176,12 @@ public class CanvasSelectorController : MonoBehaviour
 
     IEnumerator SlideIn(VisualElement panel, SlideDirection dir)
     {
+
+        ShaderVolumeManager.Instance.SetScanlinesIntensity(1);
+        StartCoroutine(ShaderVolumeManager.Instance.ColorFilterIntensityCoroutine(-1,slideDuration));
+        GunController.Instance.isWeaponHidden = true;
+        GunController.Instance.DeactivateLastWeapon();
+
         Vector2 from = OffscreenOffset(dir);
         Vector2 to   = Vector2.zero;
 
@@ -177,10 +195,21 @@ public class CanvasSelectorController : MonoBehaviour
             yield return null;
         }
         SetTranslate(panel, 0, 0);
+
+
+        Time.timeScale = 0.1f;
+
     }
 
     IEnumerator SlideOut(VisualElement panel, SlideDirection dir)
     {
+        Time.timeScale = 1;
+
+        ShaderVolumeManager.Instance.SetScanlinesDefaultIntensity();
+        StartCoroutine(ShaderVolumeManager.Instance.ColorFilterIntensityCoroutine(0, 0.1f));
+        GunController.Instance.isWeaponHidden = false;
+        GunController.Instance.ActivateLastWeapon();
+
         Vector2 from = Vector2.zero;
         Vector2 to   = OffscreenOffset(dir);
 
@@ -194,6 +223,7 @@ public class CanvasSelectorController : MonoBehaviour
             yield return null;
         }
         SetTranslate(panel, to.x, to.y);
+
     }
 
     void StopCoroutines()

@@ -30,6 +30,11 @@ public class ShaderVolumeManager : MonoBehaviour
     private Scanlines scanlines;
     private float scanlinesIntensityDefault;
 
+    private Color currentFilterColor;
+    private float currentFilterIntensity = 1f;
+    private float defaultFilterIntensity = 1f;
+    private Coroutine intensityCoroutine;
+
     private static ShaderVolumeManager _instance;
     public static ShaderVolumeManager Instance { get { return _instance; } }
     private void Awake()
@@ -84,9 +89,14 @@ public class ShaderVolumeManager : MonoBehaviour
             bleedingColorsDefaultShift = bleedingColors.shift.value;
         }
         if (colorAdjustments != null)
-        {
-            colorAdjustmentsDefaultColor = colorAdjustments.colorFilter.value;
-        }
+    {
+        Color hdrColor = colorAdjustments.colorFilter.value;
+        float ev = Mathf.Log(Mathf.Max(hdrColor.maxColorComponent, 1e-5f), 2f);
+        currentFilterColor = ev > 0f ? hdrColor / Mathf.Pow(2f, ev) : hdrColor;
+        currentFilterIntensity = ev;
+        defaultFilterIntensity = ev;
+        colorAdjustmentsDefaultColor = hdrColor;
+    }
         if (distortion != null)
         {
             distortionDefaultIntensity = distortion.intensity.value;
@@ -119,17 +129,65 @@ public class ShaderVolumeManager : MonoBehaviour
         Color lerpedColor = Color.Lerp(Color.red, Color.black, t);
         vignette.color.value = lerpedColor;
     }
+
     public void SetColorAdjustmentColorByValue(int value)
     {
-        if (colorAdjustments == null)
-        {
-            Start();
-        }
+        if (colorAdjustments == null) Start();
+
         value = Mathf.Clamp(value, 0, 100);
         float t = value / 100f;
-        Color lerpedColor = Color.Lerp(Color.red, colorAdjustmentsDefaultColor, t);
-        colorAdjustments.colorFilter.value = lerpedColor;
+        currentFilterColor = Color.Lerp(Color.red, colorAdjustmentsDefaultColor, t);
+
+        ApplyColorFilter();
     }
+
+    public void SetColorAdjustmentDefaultIntensity(float value)
+    {
+        defaultFilterIntensity = value;
+        currentFilterIntensity = value;
+
+        ApplyColorFilter();
+    }
+
+    public void SetColorAdjustmentColorIntensity(float targetEV, float duration)
+    {
+        if (colorAdjustments == null) Start();
+
+        if (intensityCoroutine != null)
+        {
+            StopCoroutine(intensityCoroutine);
+        }
+
+        intensityCoroutine = StartCoroutine(ColorFilterIntensityCoroutine(targetEV, duration));
+    }
+
+    public IEnumerator ColorFilterIntensityCoroutine(float targetEV, float duration)
+    {
+        float startEV = currentFilterIntensity;
+        float t = 0f;
+
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float k = Mathf.Clamp01(t / duration);
+            float s = Mathf.SmoothStep(0f, 1f, k);
+
+            currentFilterIntensity = Mathf.Lerp(startEV, targetEV, s);
+            ApplyColorFilter();
+
+            yield return null;
+        }
+
+        currentFilterIntensity = targetEV;
+        ApplyColorFilter();
+        intensityCoroutine = null;
+    }
+
+    private void ApplyColorFilter()
+    {
+        colorAdjustments.colorFilter.value = currentFilterColor * Mathf.Pow(2f, currentFilterIntensity);
+    }
+
     public void SetFilmGrainByValue(int value)
     {
         if (filmGrain == null)
@@ -253,6 +311,13 @@ public class ShaderVolumeManager : MonoBehaviour
             Start();
         }
 
+        // Останавливаем корутину интенсивности чтобы не было конфликта
+        if (intensityCoroutine != null)
+        {
+            StopCoroutine(intensityCoroutine);
+            intensityCoroutine = null;
+        }
+
         float halfDuration = duration / 2f;
 
         Color startColor = colorAdjustments.colorFilter.value;
@@ -280,6 +345,10 @@ public class ShaderVolumeManager : MonoBehaviour
         }
 
         colorAdjustments.colorFilter.value = defaultColor;
+
+        // Восстанавливаем currentFilterColor после анимации
+        currentFilterColor = defaultColor;
+        currentFilterIntensity = defaultFilterIntensity;
     }
 
     public void ChangeColorAdjustmentColorFilter(Color color)
@@ -586,6 +655,19 @@ public class ShaderVolumeManager : MonoBehaviour
 
         scanlines.intensity.value = defIntensity;
     }
+
+    public void SetScanlinesIntensity(float value)
+    {
+        if (!scanlines) Start();
+
+        scanlines.intensity.value = value;
+    }
+    public void SetScanlinesDefaultIntensity()
+    {
+        if (!scanlines) Start();
+
+        scanlines.intensity.value = scanlinesIntensityDefault;
+    }
     
     public IEnumerator FilmGrainResetCoroutine(float resetDuration)
     {
@@ -627,6 +709,8 @@ public class ShaderVolumeManager : MonoBehaviour
     public void SetDefaultColorColorAdjustment()
     {
         colorAdjustments.colorFilter.value = colorAdjustmentsDefaultColor;
+        currentFilterColor = colorAdjustmentsDefaultColor;
+        currentFilterIntensity = defaultFilterIntensity;
     }
 
     /*public void SetExposureCompensation(float newCompensationValue)
