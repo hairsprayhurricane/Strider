@@ -19,6 +19,8 @@ public class GunData : MonoBehaviour
     {
         gunController = GunController.Instance;
 
+        /*
+        */
         gunController.AddWeapon(playerPistolPrefab);
         gunController.AddWeapon(shotgunPrefab);
         gunController.AddWeapon(machineGunPrefab);
@@ -30,7 +32,9 @@ public class GunData : MonoBehaviour
         gunController.AddWeapon(unmakerPrefab, 7);
         */
 
+        /*
         gunController.AddWeapon(thunderBolt);
         gunController.AddWeapon(fireThrower);
+        */
     }
 }

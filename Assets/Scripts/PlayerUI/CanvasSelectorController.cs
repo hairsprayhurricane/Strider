@@ -18,6 +18,21 @@ public class CanvasSelectorController : MonoBehaviour
     [Header("Settings")]
     public float slideDuration = 0.4f;
 
+    // ---- Константы масштабирования слотов ----
+    // Целевая ширина панели (суммарная), к которой стремимся при любом числе оружий.
+    private const float TARGET_PANEL_WIDTH  = 1600f;
+    private const float SLOT_GAP            = 6f;
+    private const float PANEL_PADDING_H     = 42f;   // 21px * 2 (padding-left + padding-right)
+
+    // Минимальный и максимальный размеры слота
+    private const float SLOT_MIN_WIDTH  = 178f;
+    private const float SLOT_MIN_HEIGHT = 74f;
+    private const float SLOT_MAX_WIDTH  = 420f;
+    private const float SLOT_MAX_HEIGHT = 130f;
+
+    // При каком числе оружий включаем «большой» вариант шрифтов/иконок
+    private const int LARGE_THRESHOLD = 4;
+
     private VisualElement root;
     private VisualElement weaponPanel;
     private VisualElement itemPanel;
@@ -26,29 +41,40 @@ public class CanvasSelectorController : MonoBehaviour
     private readonly List<VisualElement> weaponSlots = new();
     private int activeSlotIndex = -1;
 
-    private Coroutine[] slideCoroutines = new Coroutine[3];
+    public Coroutine[] slideCoroutines = new Coroutine[3];
     public bool isOpen = false;
 
+    private PlayerHealth playerHealth;
+
     private static CanvasSelectorController _instance;
-    public static CanvasSelectorController Instance { get { return _instance; } }
+    public static CanvasSelectorController Instance => _instance;
+
+    // ----------------------------------------------------------------
+    //  Lifecycle
+    // ----------------------------------------------------------------
 
     void Awake()
     {
         if (_instance != null && _instance != this)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
+            return;
         }
-        else
-        {
-            _instance = this;
-        }
+        _instance = this;
 
         root = uiDocument.rootVisualElement;
         BuildPanels();
     }
 
+    void Start()
+    {
+        playerHealth = PlayerController.Instance.playerHealth;
+    }
+
     void Update()
     {
+        if (playerHealth.isDead) return;
+
         if (Input.GetKeyDown(KeyCode.Tab)) Open();
         if (Input.GetKeyUp(KeyCode.Tab))   Close();
 
@@ -77,12 +103,11 @@ public class CanvasSelectorController : MonoBehaviour
         itemPanel   = itemSelectorAsset.Instantiate();
         ammoPanel   = ammunitionInfoAsset.Instantiate();
 
-        // ТОЧНЫЕ размеры из USS (960px, 630px, 180px)
-        PositionWeaponPanel(weaponPanel);
         PositionItemPanel(itemPanel);
         PositionAmmoPanel(ammoPanel);
 
-        // Спрятать за экран
+        // Weapon panel позиционируется после BuildWeaponSlots,
+        // где узнаём реальное число оружий.
         SetTranslate(weaponPanel, 0, -Screen.height);
         SetTranslate(itemPanel,   0,  Screen.height);
         SetTranslate(ammoPanel,   Screen.width, 0);
@@ -94,59 +119,155 @@ public class CanvasSelectorController : MonoBehaviour
         BuildWeaponSlots();
     }
 
-    void PositionWeaponPanel(VisualElement panel)
+    // ----------------------------------------------------------------
+    //  Slot size calculation
+    // ----------------------------------------------------------------
+
+    /// <summary>
+    /// Вычисляет размер одного слота так, чтобы все слоты вместе
+    /// занимали примерно TARGET_PANEL_WIDTH.
+    /// </summary>
+    static (float slotW, float slotH) CalcSlotSize(int count)
     {
-        panel.style.position = Position.Absolute;
-        panel.style.top = new StyleLength(0f);
-        panel.style.left = Length.Percent(50);
-        panel.style.marginLeft = new StyleLength(-480f);  // 960px / 2
+        if (count <= 0) count = 1;
+
+        // Доступная ширина для слотов = target - padding - gaps
+        float available = TARGET_PANEL_WIDTH - PANEL_PADDING_H - SLOT_GAP * (count - 1);
+        float slotW = available / count;
+        slotW = Mathf.Clamp(slotW, SLOT_MIN_WIDTH, SLOT_MAX_WIDTH);
+
+        // Высота масштабируется пропорционально ширине относительно минимума
+        float ratio  = (slotW - SLOT_MIN_WIDTH) / (SLOT_MAX_WIDTH - SLOT_MIN_WIDTH);
+        float slotH  = Mathf.Lerp(SLOT_MIN_HEIGHT, SLOT_MAX_HEIGHT, ratio);
+
+        return (Mathf.Round(slotW), Mathf.Round(slotH));
+    }
+
+    /// <summary>
+    /// Суммарная ширина панели с учётом padding и gap для count слотов.
+    /// </summary>
+    static float CalcPanelWidth(int count, float slotW)
+    {
+        return slotW * count + SLOT_GAP * Mathf.Max(0, count - 1) + PANEL_PADDING_H;
+    }
+
+    // ----------------------------------------------------------------
+    //  Positioning
+    // ----------------------------------------------------------------
+
+    void PositionWeaponPanel(VisualElement panel, float panelWidth)
+    {
+        panel.style.position  = Position.Absolute;
+        panel.style.top       = new StyleLength(0f);
+        panel.style.left      = Length.Percent(50);
+        panel.style.marginLeft = new StyleLength(-panelWidth * 0.5f);
     }
 
     void PositionItemPanel(VisualElement panel)
     {
-        panel.style.position = Position.Absolute;
-        panel.style.bottom = new StyleLength(0f);
-        panel.style.left = Length.Percent(50);
+        panel.style.position   = Position.Absolute;
+        panel.style.bottom     = new StyleLength(0f);
+        panel.style.left       = Length.Percent(50);
         panel.style.marginLeft = new StyleLength(-315f);  // 630px / 2
     }
 
     void PositionAmmoPanel(VisualElement panel)
     {
-        panel.style.position = Position.Absolute;
-        panel.style.right = new StyleLength(0f);
-        panel.style.top = Length.Percent(50);
+        panel.style.position  = Position.Absolute;
+        panel.style.right     = new StyleLength(0f);
+        panel.style.top       = Length.Percent(50);
         panel.style.marginTop = new StyleLength(-90f);    // 180px / 2
     }
 
-
-    public enum PositionEdge { Top, Bottom, Right, Left }
-
+    // ----------------------------------------------------------------
+    //  Build slots
+    // ----------------------------------------------------------------
 
     void BuildWeaponSlots()
     {
         VisualElement container = weaponPanel.Q("slots-container");
         if (container == null) return;
-
         container.Clear();
         weaponSlots.Clear();
 
-        for (int i = 1; i <= 9; i++)
+        GunController gc    = GunController.Instance;
+        int weaponCount     = CountPlayerWeapons(gc);
+        bool large          = weaponCount <= LARGE_THRESHOLD;
+
+        var (slotW, slotH)  = CalcSlotSize(weaponCount);
+        float panelWidth    = CalcPanelWidth(weaponCount, slotW);
+        float leftW         = large ? 70f : 50f;
+        float iconSize      = large ? 64f : 44f;
+
+        // Позиционируем панель по реальной ширине
+        PositionWeaponPanel(weaponPanel, panelWidth);
+        weaponPanel.style.width = new StyleLength(panelWidth);
+
+        for (int i = 1; i <= GunController.MAX_WEAPONS; i++)
         {
+            if (gc != null && gc.TryGetWeaponAt(i) == null) continue; // показываем только полученные
+
             var slot = new VisualElement();
             slot.AddToClassList("weapon-slot");
-            slot.AddToClassList("weapon-slot--empty");
 
-            var num  = new Label(i.ToString()); num.name  = "slot-number"; num.AddToClassList("slot-number");
-            var name = new Label("— empty —");  name.name = "weapon-name"; name.AddToClassList("weapon-name"); name.AddToClassList("weapon-name--empty");
-            var ammo = new Label("");            ammo.name = "weapon-ammo"; ammo.AddToClassList("weapon-ammo");
+            // Задаём размер слота инлайн
+            slot.style.width  = new StyleLength(slotW);
+            slot.style.height = new StyleLength(slotH);
 
-            slot.Add(num); slot.Add(name); slot.Add(ammo);
+            // Левая колонка
+            var left = new VisualElement();
+            left.AddToClassList("weapon-left");
+            left.style.width = new StyleLength(leftW);
+
+            var icon = new VisualElement();
+            icon.name = "weapon-icon";
+            icon.AddToClassList("weapon-icon");
+            icon.AddToClassList("weapon-icon--empty");
+            icon.style.width     = new StyleLength(iconSize);
+            icon.style.height    = new StyleLength(iconSize);
+            icon.style.minWidth  = new StyleLength(iconSize);
+            icon.style.minHeight = new StyleLength(iconSize);
+
+            left.Add(icon);
+
+            // Правая колонка
+            var info = new VisualElement();
+            info.name = "weapon-info";
+            info.AddToClassList("weapon-info");
+
+            var nameLbl = new Label("— empty —");
+            nameLbl.name = "weapon-name";
+            nameLbl.AddToClassList("weapon-name");
+            nameLbl.AddToClassList("weapon-name--empty");
+            if (large) nameLbl.AddToClassList("weapon-name--large");
+
+            var ammoLbl = new Label("");
+            ammoLbl.name = "weapon-ammo";
+            ammoLbl.AddToClassList("weapon-ammo");
+            if (large) ammoLbl.AddToClassList("weapon-ammo--large");
+
+            info.Add(nameLbl);
+            info.Add(ammoLbl);
+
+            slot.Add(left);
+            slot.Add(info);
+
             container.Add(slot);
             weaponSlots.Add(slot);
 
             int captured = i;
             slot.RegisterCallback<ClickEvent>(_ => SwitchWeapon(captured));
         }
+    }
+
+    /// <summary>Считает количество оружий у игрока (не null слоты).</summary>
+    int CountPlayerWeapons(GunController gc)
+    {
+        if (gc == null) return 1;
+        int count = 0;
+        for (int i = 1; i <= GunController.MAX_WEAPONS; i++)
+            if (gc.TryGetWeaponAt(i) != null) count++;
+        return Mathf.Max(count, 1);
     }
 
     // ----------------------------------------------------------------
@@ -176,9 +297,8 @@ public class CanvasSelectorController : MonoBehaviour
 
     IEnumerator SlideIn(VisualElement panel, SlideDirection dir)
     {
-
         ShaderVolumeManager.Instance.SetScanlinesIntensity(1);
-        StartCoroutine(ShaderVolumeManager.Instance.ColorFilterIntensityCoroutine(-1,slideDuration));
+        StartCoroutine(ShaderVolumeManager.Instance.ColorFilterIntensityCoroutine(-1, slideDuration));
         GunController.Instance.isWeaponHidden = true;
         GunController.Instance.DeactivateLastWeapon();
 
@@ -189,19 +309,17 @@ public class CanvasSelectorController : MonoBehaviour
         while (elapsed < slideDuration)
         {
             elapsed += Time.deltaTime;
-            float t = Mathf.SmoothStep(0f, 1f, elapsed / slideDuration);
-            Vector2 pos = Vector2.Lerp(from, to, t);
-            SetTranslate(panel, pos.x, pos.y);
+            float t   = Mathf.SmoothStep(0f, 1f, elapsed / slideDuration);
+            Vector2 p = Vector2.Lerp(from, to, t);
+            SetTranslate(panel, p.x, p.y);
             yield return null;
         }
         SetTranslate(panel, 0, 0);
 
-
         Time.timeScale = 0.1f;
-
     }
 
-    IEnumerator SlideOut(VisualElement panel, SlideDirection dir)
+    public IEnumerator SlideOut(VisualElement panel, SlideDirection dir)
     {
         Time.timeScale = 1;
 
@@ -217,16 +335,15 @@ public class CanvasSelectorController : MonoBehaviour
         while (elapsed < slideDuration)
         {
             elapsed += Time.deltaTime;
-            float t = Mathf.SmoothStep(0f, 1f, elapsed / slideDuration);
-            Vector2 pos = Vector2.Lerp(from, to, t);
-            SetTranslate(panel, pos.x, pos.y);
+            float t   = Mathf.SmoothStep(0f, 1f, elapsed / slideDuration);
+            Vector2 p = Vector2.Lerp(from, to, t);
+            SetTranslate(panel, p.x, p.y);
             yield return null;
         }
         SetTranslate(panel, to.x, to.y);
-
     }
 
-    void StopCoroutines()
+    public void StopCoroutines()
     {
         foreach (var c in slideCoroutines)
             if (c != null) StopCoroutine(c);
@@ -241,7 +358,12 @@ public class CanvasSelectorController : MonoBehaviour
         if (isOpen) return;
         isOpen = true;
         StopCoroutines();
+
+        // Пересобираем слоты каждый раз при открытии,
+        // чтобы подхватить новые оружия и пересчитать размеры.
+        BuildWeaponSlots();
         RefreshAll();
+
         slideCoroutines[0] = StartCoroutine(SlideIn(weaponPanel, SlideDirection.FromTop));
         slideCoroutines[1] = StartCoroutine(SlideIn(itemPanel,   SlideDirection.FromBottom));
         slideCoroutines[2] = StartCoroutine(SlideIn(ammoPanel,   SlideDirection.FromRight));
@@ -258,7 +380,7 @@ public class CanvasSelectorController : MonoBehaviour
     }
 
     public void Toggle() { if (isOpen) Close(); else Open(); }
-    public bool IsOpen => isOpen;
+    public bool IsOpen   => isOpen;
 
     // ----------------------------------------------------------------
     //  Weapons
@@ -281,9 +403,10 @@ public class CanvasSelectorController : MonoBehaviour
         GunController gc = GunController.Instance;
         if (gc == null) return -1;
         int current = Mathf.Max(gc.GetCurrentGunIndex(), 1);
-        for (int step = 1; step <= 9; step++)
+        for (int step = 1; step <= GunController.MAX_WEAPONS; step++)
         {
-            int candidate = ((current - 1 + dir * step + 9) % 9) + 1;
+            int candidate = ((current - 1 + dir * step + GunController.MAX_WEAPONS)
+                             % GunController.MAX_WEAPONS) + 1;
             if (gc.TryGetWeaponAt(candidate) != null) return candidate;
         }
         return -1;
@@ -299,47 +422,90 @@ public class CanvasSelectorController : MonoBehaviour
         RefreshAmmo();
     }
 
+    // Маппинг: индекс в GunController → элемент слота в weaponSlots.
+    // weaponSlots содержит только реальные оружия в порядке возрастания индекса.
     void RefreshWeaponSlots()
     {
         GunController gc = GunController.Instance;
         if (gc == null) return;
 
-        for (int i = 0; i < weaponSlots.Count; i++)
+        int slotVisual = 0;
+        for (int i = 1; i <= GunController.MAX_WEAPONS; i++)
         {
-            int slotIndex      = i + 1;
-            VisualElement slot = weaponSlots[i];
-            Label nameLabel    = slot.Q<Label>("weapon-name");
-            Label ammoLabel    = slot.Q<Label>("weapon-ammo");
-            PlayerGun gun      = gc.TryGetWeaponAt(slotIndex);
+            PlayerGun gun = gc.TryGetWeaponAt(i);
+            if (gun == null) continue;
 
-            if (gun != null)
+            if (slotVisual >= weaponSlots.Count) break;
+            VisualElement slot = weaponSlots[slotVisual];
+            slotVisual++;
+
+            Label nameLbl = slot.Q<Label>("weapon-name");
+            Label ammoLbl = slot.Q<Label>("weapon-ammo");
+            VisualElement icon = slot.Q<VisualElement>("weapon-icon");
+
+            slot.RemoveFromClassList("weapon-slot--empty");
+            nameLbl.RemoveFromClassList("weapon-name--empty");
+            nameLbl.text = gun.GetGunName();
+            ammoLbl.text = gun.GetAmmoDisplayString(gc);
+
+            if (icon != null)
             {
-                slot.RemoveFromClassList("weapon-slot--empty");
-                nameLabel.RemoveFromClassList("weapon-name--empty");
-                nameLabel.text = gun.GetGunName();
-                ammoLabel.text = gun.GetAmmoDisplayString(gc);
-            }
-            else
-            {
-                slot.AddToClassList("weapon-slot--empty");
-                nameLabel.AddToClassList("weapon-name--empty");
-                nameLabel.text = "— empty —";
-                ammoLabel.text = "";
+                icon.Clear();
+                icon.RemoveFromClassList("weapon-icon--not-found");
+
+                if (gun.weaponIcon != null)
+                {
+                    icon.RemoveFromClassList("weapon-icon--empty");
+                    icon.style.backgroundImage = new StyleBackground(gun.weaponIcon);
+                }
+                else
+                {
+                    icon.style.backgroundImage = StyleKeyword.Null;
+                    icon.AddToClassList("weapon-icon--not-found");
+
+                    var notFoundLabel = new Label("NOT\nFOUND");
+                    notFoundLabel.AddToClassList("weapon-icon-not-found-label");
+                    icon.Add(notFoundLabel);
+
+                    icon.RemoveFromClassList("weapon-icon--empty");
+                }
             }
         }
 
         SetActiveSlot(gc.GetCurrentGunIndex());
     }
 
-    void SetActiveSlot(int index)
+    /// <summary>
+    /// Устанавливает активный слот. Поскольку weaponSlots теперь содержат
+    /// только реальные оружия, нужно найти визуальный индекс по gun index.
+    /// </summary>
+    void SetActiveSlot(int gunIndex)
     {
-        if (activeSlotIndex >= 1 && activeSlotIndex - 1 < weaponSlots.Count)
-            weaponSlots[activeSlotIndex - 1].RemoveFromClassList("weapon-slot--active");
+        // Снять выделение со старого слота
+        if (activeSlotIndex >= 0 && activeSlotIndex < weaponSlots.Count)
+            weaponSlots[activeSlotIndex].RemoveFromClassList("weapon-slot--active");
 
-        activeSlotIndex = index;
+        activeSlotIndex = GunIndexToVisualIndex(gunIndex);
 
-        if (index >= 1 && index - 1 < weaponSlots.Count)
-            weaponSlots[index - 1].AddToClassList("weapon-slot--active");
+        if (activeSlotIndex >= 0 && activeSlotIndex < weaponSlots.Count)
+            weaponSlots[activeSlotIndex].AddToClassList("weapon-slot--active");
+    }
+
+    /// <summary>Переводит gun index (1-based, может быть разреженным)
+    /// в индекс визуального слота (0-based, плотный).</summary>
+    int GunIndexToVisualIndex(int gunIndex)
+    {
+        GunController gc = GunController.Instance;
+        if (gc == null) return -1;
+
+        int visual = 0;
+        for (int i = 1; i <= GunController.MAX_WEAPONS; i++)
+        {
+            if (gc.TryGetWeaponAt(i) == null) continue;
+            if (i == gunIndex) return visual;
+            visual++;
+        }
+        return -1;
     }
 
     void RefreshAmmo()

@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public enum GunType
@@ -54,6 +55,9 @@ public abstract class PlayerGun : MonoBehaviour
 
     [Header("Recoil")]
     public float shakeForceMultiplier = 1f;
+    
+    [Header("Icon For Selector")]
+    public Sprite weaponIcon;
 
     void Start()
     {

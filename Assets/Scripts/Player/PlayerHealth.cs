@@ -164,6 +164,12 @@ public class PlayerHealth : MonoBehaviour
         audioSource.Play();
         audioSource.PlayOneShot(deathSound);
 
+        if(CanvasSelectorController.Instance.isOpen)
+        {
+            var csc = CanvasSelectorController.Instance;
+            csc.Close();
+        }
+
         EnemyManager.DestroyAllAI();
         playerController.OnDeath();
         isDead = true;

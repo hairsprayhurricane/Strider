@@ -30,25 +30,27 @@
     letter-spacing: 2px;
 }
 
-/* ---- WEAPON PANEL — широкий горизонтальный ---- */
+/* ---- WEAPON PANEL ---- */
 
 #weapon-selector {
-    width: 960px;
+    /* Ширина задаётся динамически из кода в зависимости от кол-ва оружий */
 }
 
 #weapon-selector .slots-container {
     flex-direction: row;
-    flex-wrap: wrap;
-    gap: 4px;
+    flex-wrap: nowrap;
+    gap: 6px;
 }
 
+/* ---- Базовый слот (9 оружий — минимальный размер) ---- */
 #weapon-selector .weapon-slot {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-    height: 72px;
-    padding: 8px 6px;
+    flex-direction: row;
+    align-items: stretch;
+    /* width/height переопределяются инлайн-стилем из кода */
+    width: 178px;
+    height: 74px;
+    padding: 0px;
+    gap: 0px;
     border-radius: 4px;
     border-width: 1px;
     border-color: rgba(0, 0, 0, 0);
@@ -67,29 +69,119 @@
     border-color: rgba(255, 185, 50, 0.5);
 }
 
+/* Пустые слоты теперь не отображаются вовсе (скрываются из кода),
+   но класс оставляем на случай явного показа */
 #weapon-selector .weapon-slot--empty {
     opacity: 0.25;
 }
 
+#weapon-selector .weapon-left {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 0px 0px 7px;
+    flex-shrink: 0;
+    width: 50px;
+}
+
+/* Левая колонка масштабируется инлайн из кода, но базовое значение: */
+#weapon-selector .weapon-left--large {
+    width: 70px;
+    padding-left: 10px;
+}
+
 #weapon-selector .slot-number {
-    font-size: 10px;
+    font-size: 9px;
     color: rgba(255, 185, 50, 0.4);
-    -unity-text-align: upper-center;
+    -unity-text-align: upper-left;
     width: 100%;
-    margin-bottom: 4px;
+    height: 12px;
+    flex-shrink: 0;
+    margin-bottom: 2px;
 }
 
 #weapon-selector .weapon-slot--active .slot-number {
     color: rgba(255, 185, 50, 0.95);
 }
 
-#weapon-selector .weapon-name {
-    font-size: 8px;
-    color: rgba(255, 255, 255, 0.55);
+#weapon-selector .weapon-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 36px;
+    min-height: 36px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    -unity-background-scale-mode: scale-to-fit;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-width: 1px;
+    border-color: rgba(255, 185, 50, 0.15);
+    border-radius: 3px;
+    opacity: 0.75;
+}
+
+/* Увеличенная иконка для малого числа оружий */
+#weapon-selector .weapon-icon--large {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    min-height: 64px;
+}
+
+#weapon-selector .weapon-slot--active .weapon-icon {
+    opacity: 1.0;
+    border-color: rgba(255, 185, 50, 0.4);
+}
+
+#weapon-selector .weapon-icon--empty {
+    opacity: 0.0;
+}
+
+#weapon-selector .weapon-icon--not-found {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    flex-shrink: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-width: 1px;
+    border-color: rgba(255, 80, 80, 0.5);
+    border-radius: 3px;
+    align-items: center;
+    justify-content: center;
+}
+
+#weapon-selector .weapon-icon-not-found-label {
+    font-size: 6px;
+    color: rgba(255, 80, 80, 0.7);
     -unity-text-align: middle-center;
     white-space: normal;
-    width: 100%;
+}
+
+/* Правая колонка: название + патроны */
+#weapon-selector .weapon-info {
+    flex-direction: column;
+    justify-content: center;
     flex-grow: 1;
+    flex-shrink: 1;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 8px;
+    padding-right: 8px;
+    overflow: hidden;
+}
+
+#weapon-selector .weapon-name {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.6);
+    -unity-text-align: middle-left;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+}
+
+/* Увеличенный шрифт для малого числа оружий */
+#weapon-selector .weapon-name--large {
+    font-size: 20px;
 }
 
 #weapon-selector .weapon-name--empty {
@@ -104,9 +196,15 @@
 #weapon-selector .weapon-ammo {
     font-size: 10px;
     color: rgba(255, 185, 50, 0.5);
-    -unity-text-align: lower-center;
+    -unity-text-align: middle-left;
     width: 100%;
-    margin-top: 4px;
+    margin-top: 3px;
+}
+
+/* Увеличенный шрифт патронов для малого числа оружий */
+#weapon-selector .weapon-ammo--large {
+    font-size: 13px;
+    margin-top: 5px;
 }
 
 #weapon-selector .weapon-slot--active .weapon-ammo {
@@ -116,7 +214,7 @@
 /* ---- AMMO PANEL — вертикальный ---- */
 
 #ammo-info {
-    width: 180px;
+    width: 240px;
 }
 
 #ammo-info .ammo-row {
@@ -165,7 +263,7 @@
 /* ---- ITEMS PANEL — широкий горизонтальный ---- */
 
 #item-selector {
-    width: 630px;
+    width: 800px;
 }
 
 .not-implemented-badge {
@@ -181,8 +279,8 @@
 }
 
 #item-selector .item-slot {
-    width: 69px;
-    height: 69px;
+    width: 90px;
+    height: 90px;
     background-color: rgba(255, 255, 255, 0.03);
     border-width: 1px;
     border-color: rgba(255, 255, 255, 0.1);
