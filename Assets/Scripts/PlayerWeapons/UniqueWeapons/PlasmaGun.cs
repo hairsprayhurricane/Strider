@@ -44,4 +44,9 @@ public class PlasmaGun : PlayerGun
     {
         return "-";
     }
+
+    public override string GetGunName()
+    {
+        throw new System.NotImplementedException();
+    }
 }

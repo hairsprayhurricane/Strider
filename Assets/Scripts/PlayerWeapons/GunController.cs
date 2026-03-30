@@ -96,17 +96,20 @@ public class GunController : MonoBehaviour
             return;
         }
 
+        /*
+        lets just skip this one, until...
         foreach (var gun in playerGuns.Values)
         {
-            if (gun.GetGunType() == gunPrefab.GetGunType())
+            if (gun.id == gunPrefab.id)
             {
                 if (!addWeaponIfCopyExist)
                 {
-                    Debug.Log("Player already has this weapon:" + gunPrefab.GetGunType());
+                    Debug.Log("Player already has this weapon:" + gunPrefab.id);
                     return;
                 }
             }
         }
+        */
 
         AddWeaponToRegister(gunPrefab, index);
     }

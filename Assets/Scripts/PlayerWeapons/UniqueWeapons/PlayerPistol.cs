@@ -42,4 +42,9 @@ public class PlayerPistol : PlayerGun
     {
         return "-";
     }
+
+    public override string GetGunName()
+    {
+        return "Pistol 'Calibry'";
+    }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public enum GunType
+    /*public enum GunType
     {
         // Fists, boring
         //Chainsaw, boring
@@ -20,7 +20,7 @@ public enum GunType
         FireThrower,
         //ShadowSummoner,
         
-    }
+    }*/
     public enum GunClass
     {
         Light,
@@ -29,8 +29,8 @@ public enum GunType
     }
 public abstract class PlayerGun : MonoBehaviour
 {
+    public int id = 0;
     protected Transform playerPos;
-    public GunType weaponType;
     public GunClass weaponClass;
     public AmmoType weaponAmmo;
     public bool isAutomatic = false;
@@ -83,6 +83,7 @@ public abstract class PlayerGun : MonoBehaviour
 
     public abstract void Fire();
     public abstract string GetDescription();
+    public abstract string GetGunName();
 
     public void AfterFire()
     {
@@ -120,13 +121,6 @@ public abstract class PlayerGun : MonoBehaviour
     {
         //canvasManager.UpdateAmmo(ammo, this);
     }
-
-    public GunType GetGunType()
-    {
-        return weaponType;
-    }
-
-    public virtual string GetGunName() => gameObject.name;
 
     public virtual string GetAmmoDisplayString(GunController gc)
     {

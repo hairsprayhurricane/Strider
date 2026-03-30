@@ -42,4 +42,9 @@ public class FireThrower : PlayerGun
     {
         return "-";
     }
+
+    public override string GetGunName()
+    {
+        return "Fire Thrower";
+    }
 }

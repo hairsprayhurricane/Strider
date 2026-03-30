@@ -44,4 +44,9 @@ public class BFG : PlayerGun
     {
         return "-";
     }
+
+    public override string GetGunName()
+    {
+        throw new System.NotImplementedException();
+    }
 }

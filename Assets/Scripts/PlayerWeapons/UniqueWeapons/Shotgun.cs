@@ -37,4 +37,9 @@ public class Shotgun : PlayerGun
     {
         return "-";
     }
+
+    public override string GetGunName()
+    {
+        return "Shotgun 'Okami'";
+    }
 }

@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 2560
     height: 1349
   m_ShowMode: 4
-  m_Title: Project
+  m_Title: Game
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 321}
   m_MaxSize: {x: 10000, y: 10000}
@@ -218,8 +218,8 @@ MonoBehaviour:
     y: 0
     width: 1630
     height: 772
-  m_MinSize: {x: 52, y: 76}
-  m_MaxSize: {x: 4002, y: 4026}
+  m_MinSize: {x: 50, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 15}
   m_Panes:
   - {fileID: 13}
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ProjectBrowser
+  m_Name: ConsoleWindow
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -245,15 +245,15 @@ MonoBehaviour:
     y: 772
     width: 1939
     height: 521
-  m_MinSize: {x: 231, y: 276}
-  m_MaxSize: {x: 10001, y: 10026}
-  m_ActualView: {fileID: 16}
+  m_MinSize: {x: 100, y: 100}
+  m_MaxSize: {x: 4000, y: 4000}
+  m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 16}
   - {fileID: 17}
   - {fileID: 18}
-  m_Selected: 0
-  m_LastSelected: 1
+  m_Selected: 1
+  m_LastSelected: 0
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -273,8 +273,8 @@ MonoBehaviour:
     y: 0
     width: 621
     height: 1293
-  m_MinSize: {x: 276, y: 76}
-  m_MaxSize: {x: 4001, y: 4026}
+  m_MinSize: {x: 275, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 19}
   m_Panes:
   - {fileID: 19}
@@ -1303,7 +1303,7 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -1358
+      - m_Data: -1510
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1481,7 +1481,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Resources/Prefabs/Player/Guns
+    - Assets/Scripts/PlayerWeapons
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1491,7 +1491,7 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 85
   m_LastFolders:
-  - Assets/Resources/SampleStuff
+  - Assets/Scripts/PlayerWeapons
   m_LastFoldersGridSize: 85
   m_LastProjectPath: C:\Users\trued\source\repos\Strider
   m_LockTracker:
@@ -1500,21 +1500,21 @@ MonoBehaviour:
   m_FolderTreeState:
     scrollPos: {x: 0, y: 25}
     m_SelectedIDs:
-    - m_Data: 1000000004
+    - m_Data: 47350
     m_LastClickedID:
-      m_Data: 1000000004
+      m_Data: 47350
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 47132
-    - m_Data: 47134
-    - m_Data: 47136
-    - m_Data: 47138
-    - m_Data: 47140
-    - m_Data: 47142
-    - m_Data: 47144
-    - m_Data: 47146
-    - m_Data: 47148
-    - m_Data: 47150
+    - m_Data: 47214
+    - m_Data: 47216
+    - m_Data: 47218
+    - m_Data: 47220
+    - m_Data: 47222
+    - m_Data: 47224
+    - m_Data: 47226
+    - m_Data: 47228
+    - m_Data: 47230
+    - m_Data: 47232
     - m_Data: 1000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1548,16 +1548,16 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 47132
-    - m_Data: 47134
-    - m_Data: 47136
-    - m_Data: 47138
-    - m_Data: 47140
-    - m_Data: 47142
-    - m_Data: 47144
-    - m_Data: 47146
-    - m_Data: 47148
-    - m_Data: 47150
+    - m_Data: 47214
+    - m_Data: 47216
+    - m_Data: 47218
+    - m_Data: 47220
+    - m_Data: 47222
+    - m_Data: 47224
+    - m_Data: 47226
+    - m_Data: 47228
+    - m_Data: 47230
+    - m_Data: 47232
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1586,7 +1586,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: []
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 0
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs:
     - m_Data: 77780
     - m_Data: 72428

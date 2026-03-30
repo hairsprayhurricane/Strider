@@ -42,4 +42,9 @@ public class RocketLauncher : PlayerGun
     {
         return "-";
     }
+
+    public override string GetGunName()
+    {
+        return "RL 'Quake'";
+    }
 }

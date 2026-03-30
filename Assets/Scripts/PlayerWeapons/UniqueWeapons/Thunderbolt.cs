@@ -211,4 +211,9 @@ public class Thunderbolt : PlayerGun
                 break;
         }
     }
+
+    public override string GetGunName()
+    {
+        return "Thunder";
+    }
 }

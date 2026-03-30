@@ -42,4 +42,9 @@ public class MachineGun : PlayerGun
     {
         return "-";
     }
+
+    public override string GetGunName()
+    {
+        return "Machine Gun 'Copper'";
+    }
 }
