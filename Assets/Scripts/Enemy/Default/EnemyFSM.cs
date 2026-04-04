@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// FSM means Finite State Machine
 public class EnemyFSM : MonoBehaviour
 {
     public enum GlobalState
