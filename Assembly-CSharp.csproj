@@ -88,6 +88,7 @@
     <Compile Include="Assets\Shaders\VHS\VUnsync\VUnsync.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
     <Compile Include="Assets\Scripts\PlayerWeapons\UniqueWeapons\MachineGun.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Default\EnemyFSM.cs" />
     <Compile Include="Assets\Scripts\Enemy\Default\EnemyManager.cs" />
     <Compile Include="Assets\Scripts\Environment\RedBarrel.cs" />
     <Compile Include="Assets\Scripts\Enemy\Default\EnemyType.cs" />

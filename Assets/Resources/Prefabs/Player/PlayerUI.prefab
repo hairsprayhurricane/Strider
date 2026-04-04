@@ -54,6 +54,7 @@ MonoBehaviour:
   itemSelectorAsset: {fileID: 9197481963319205126, guid: c5429fb50e6bf774ca0c65fbc112e6a6, type: 3}
   ammunitionInfoAsset: {fileID: 9197481963319205126, guid: bbf5fe62b8058bf46a12cbdb12e358d6, type: 3}
   slideDuration: 0.5
+  isOpen: 0
 --- !u!114 &4960946234109559542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,3 +320,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 582504002a0f4394dbae5a894dcc31cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShaderVolumeManager
+  enemySearchColor: {r: 1, g: 0.45, b: 0, a: 1}
+  enemyAttackColor: {r: 1, g: 0.2, b: 0, a: 1}

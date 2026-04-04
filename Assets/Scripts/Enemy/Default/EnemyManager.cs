@@ -45,6 +45,7 @@ public class EnemyManager : MonoBehaviour
             var enemyAwareness = enemyType.enemy.enemyAwareness;
             if (enemyAwareness) enemyAwareness.isAggro = true;
         }
+        EnemyFSM.SetAttack();
         ControllerOST.Instance.PlayAction();
     }
 }

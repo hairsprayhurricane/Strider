@@ -89,7 +89,8 @@ public abstract class PlayerGun : MonoBehaviour
     {
         nextTimeToFire = Time.time + fireRate;
 
-        if (!isSilenced) EnemyManager.AggroAll();
+        if (!isSilenced) 
+            EnemyFSM.GlobalPlayerSearch(transform.position);
 
         audioSource.PlayOneShot(shotSound);
 

@@ -35,8 +35,15 @@ public class ShaderVolumeManager : MonoBehaviour
     private float defaultFilterIntensity = 1f;
     private Coroutine intensityCoroutine;
 
+    private Color vignetteDefaultColor;
+    private Coroutine vignetteColorCoroutine;
+
     private static ShaderVolumeManager _instance;
     public static ShaderVolumeManager Instance { get { return _instance; } }
+
+    //public Color enemyDefaultColor;
+    public Color enemySearchColor = Color.orange;
+    public Color enemyAttackColor = Color.red;
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -74,6 +81,7 @@ public class ShaderVolumeManager : MonoBehaviour
         {
             vignette.active = true;
             vignette.color.overrideState = true;
+            vignetteDefaultColor = vignette.color.value;
         }
         if (lgg != null)
         {
@@ -116,6 +124,52 @@ public class ShaderVolumeManager : MonoBehaviour
             scanlinesIntensityDefault = scanlines.intensity.value;
         }
 
+        EnemyFSM.OnStateChanged += OnEnemyStateChanged;
+    }
+
+    private void OnDestroy()
+    {
+        EnemyFSM.OnStateChanged -= OnEnemyStateChanged;
+    }
+
+    private void OnEnemyStateChanged(EnemyFSM.GlobalState state)
+    {
+        switch (state)
+        {
+            case EnemyFSM.GlobalState.Search:
+                SetVignetteColor(enemySearchColor, 1f);
+                break;
+            case EnemyFSM.GlobalState.Attack:
+                SetVignetteColor(enemyAttackColor, 1f);
+                break;
+            case EnemyFSM.GlobalState.Calm:
+                SetVignetteColor(vignetteDefaultColor, 1f);
+                break;
+        }
+    }
+
+    public void SetVignetteColor(Color target, float duration = 1f)
+    {
+        if (vignette == null) return;
+        if (vignetteColorCoroutine != null) StopCoroutine(vignetteColorCoroutine);
+        vignetteColorCoroutine = StartCoroutine(VignetteColorCoroutine(target, duration));
+    }
+
+    private IEnumerator VignetteColorCoroutine(Color target, float duration)
+    {
+        Color start = vignette.color.value;
+        float t = 0f;
+
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float k = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / duration));
+            vignette.color.value = Color.Lerp(start, target, k);
+            yield return null;
+        }
+
+        vignette.color.value = target;
+        vignetteColorCoroutine = null;
     }
 
     public void SetVignetteColorByValue(int value)
