@@ -24,12 +24,12 @@ public class LogInterface : MonoBehaviour
         }
         if (elapsedTime >= maxWaitTime)
         {
-            ClearRecords();
+            Clear();
         }
         //Debug.Log(elapsedTime);
     }
 
-    public static void AddNewRecord(String newText, Color color = default)
+    public static void Add(String newText, Color color = default)
     {
         if (text)
         {
@@ -46,7 +46,7 @@ public class LogInterface : MonoBehaviour
         }
     }
 
-    public static void ClearRecords()
+    public static void Clear()
     {
         text.text = "";
         elapsedTime = 0f;

@@ -58,6 +58,15 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    public void HealPlayerInstant()
+    {
+        if (!isDead)
+        {
+            health = maxHealth;
+            StartCoroutine(ShaderVolumeManager.Instance.DramaticallyIncreaseChromaticAberration());
+        }
+    }
+
     public void DamagePlayer(short damage, Transform otherTransform = default, LastDamageType lastDamageType = 0)
     {
 
