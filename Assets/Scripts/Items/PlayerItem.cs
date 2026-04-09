@@ -1,19 +1,24 @@
-using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
-public abstract class PlayerItem
+public abstract class PlayerItem : ScriptableObject
 {
-    public byte idInInventory = 0;
+    [Header("Info")]
+    public string itemName = "Unknown Item";
+    public Sprite itemIcon;
+    [TextArea] public string itemDescription = "";
+
+    [HideInInspector] public int idInInventory = 0;
+
     public void Use()
     {
         Action();
         AfterAction();
-    }   
+    }
 
     public abstract void Action();
-    public void AfterAction()
+
+    private void AfterAction()
     {
-        PlayerInventory.Instance.RemoveItem(idInInventory);   
+        PlayerInventory.Instance.RemoveItem(this);
     }
 }

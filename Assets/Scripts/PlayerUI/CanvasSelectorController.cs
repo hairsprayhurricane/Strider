@@ -41,6 +41,9 @@ public class CanvasSelectorController : MonoBehaviour
     private readonly List<VisualElement> weaponSlots = new();
     private int activeSlotIndex = -1;
 
+    private readonly List<VisualElement> itemSlots = new();
+    private int selectedItemIndex = 0;
+
     public Coroutine[] slideCoroutines = new Coroutine[3];
     public bool isOpen = false;
 
@@ -77,6 +80,17 @@ public class CanvasSelectorController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Tab)) Open();
         if (Input.GetKeyUp(KeyCode.Tab))   Close();
+
+        // Быстрое использование предмета без открытия инвентаря
+        if (Input.GetKeyDown(KeyCode.F) && !isOpen)
+            QuickUseItem();
+
+        if (isOpen)
+        {
+            if (Input.GetKeyDown(KeyCode.LeftBracket))  SelectItemDelta(-1);
+            if (Input.GetKeyDown(KeyCode.RightBracket)) SelectItemDelta(+1);
+            if (Input.GetKeyDown(KeyCode.F))            UseSelectedItem();
+        }
 
         if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchWeapon(1);
         if (Input.GetKeyDown(KeyCode.Alpha2)) SwitchWeapon(2);
@@ -117,6 +131,7 @@ public class CanvasSelectorController : MonoBehaviour
         root.Add(ammoPanel);
 
         BuildWeaponSlots();
+        InitItemSlots();
     }
 
     // ----------------------------------------------------------------
@@ -420,6 +435,7 @@ public class CanvasSelectorController : MonoBehaviour
     {
         RefreshWeaponSlots();
         RefreshAmmo();
+        RefreshItemSlots();
     }
 
     // Маппинг: индекс в GunController → элемент слота в weaponSlots.
@@ -528,5 +544,117 @@ public class CanvasSelectorController : MonoBehaviour
 
         if (bar   != null && max > 0) bar.style.width = Length.Percent(100f * current / max);
         if (count != null)            count.text      = $"{current} / {max}";
+    }
+
+    // ----------------------------------------------------------------
+    //  Items
+    // ----------------------------------------------------------------
+
+    // Вызывается один раз при старте — находит слоты из UXML и вешает клики
+    void InitItemSlots()
+    {
+        itemSlots.Clear();
+        var slots = itemPanel.Query(className: "item-slot").ToList();
+        foreach (var slot in slots)
+            itemSlots.Add(slot);
+
+        for (int i = 0; i < itemSlots.Count; i++)
+        {
+            int captured = i;
+            itemSlots[i].RegisterCallback<ClickEvent>(_ =>
+            {
+                var inv = PlayerInventory.Instance;
+                if (inv == null || captured >= inv.items.Count) return;
+                selectedItemIndex = captured;
+                UseSelectedItem();
+            });
+        }
+
+        // Убираем плашку NOT IMPLEMENTED
+        itemPanel.Q<Label>(className: "not-implemented-badge")?.RemoveFromHierarchy();
+    }
+
+    // Обновляет визуал слотов по текущему инвентарю
+    void RefreshItemSlots()
+    {
+        var inv = PlayerInventory.Instance;
+
+        for (int i = 0; i < itemSlots.Count; i++)
+        {
+            var slot = itemSlots[i];
+            slot.Clear();
+
+            if (inv != null && i < inv.items.Count)
+            {
+                PlayerItem item = inv.items[i];
+                slot.RemoveFromClassList("item-slot--empty");
+
+                if (item.itemIcon != null)
+                    slot.style.backgroundImage = new StyleBackground(item.itemIcon);
+                else
+                    slot.style.backgroundImage = StyleKeyword.Null;
+
+                var nameLbl = new Label(item.itemName);
+                nameLbl.style.fontSize        = 9;
+                nameLbl.style.color           = Color.white;
+                nameLbl.style.unityTextAlign  = TextAnchor.LowerCenter;
+                nameLbl.style.whiteSpace      = WhiteSpace.Normal;
+                slot.Add(nameLbl);
+            }
+            else
+            {
+                slot.AddToClassList("item-slot--empty");
+                slot.style.backgroundImage = StyleKeyword.Null;
+                var placeholder = new Label("?");
+                placeholder.AddToClassList("item-slot-placeholder");
+                slot.Add(placeholder);
+            }
+        }
+
+        UpdateItemSelection();
+    }
+
+    void UpdateItemSelection()
+    {
+        var inv = PlayerInventory.Instance;
+        for (int i = 0; i < itemSlots.Count; i++)
+        {
+            bool isSelected = i == selectedItemIndex && inv != null && i < inv.items.Count;
+            if (isSelected)
+                itemSlots[i].AddToClassList("item-slot--selected");
+            else
+                itemSlots[i].RemoveFromClassList("item-slot--selected");
+        }
+    }
+
+    void SelectItemDelta(int delta)
+    {
+        var inv = PlayerInventory.Instance;
+        if (inv == null || inv.items.Count == 0) return;
+
+        selectedItemIndex = (selectedItemIndex + delta + inv.items.Count) % inv.items.Count;
+        UpdateItemSelection();
+    }
+
+    void UseSelectedItem()
+    {
+        var inv = PlayerInventory.Instance;
+        if (inv == null || inv.items.Count == 0) return;
+
+        selectedItemIndex = Mathf.Clamp(selectedItemIndex, 0, inv.items.Count - 1);
+        inv.items[selectedItemIndex].Use();
+
+        if (isOpen) RefreshItemSlots();
+    }
+
+    void QuickUseItem()
+    {
+        var inv = PlayerInventory.Instance;
+        if (inv == null || !inv.HasItems) return;
+
+        selectedItemIndex = Mathf.Clamp(selectedItemIndex, 0, inv.items.Count - 1);
+        PlayerItem item = inv.items[selectedItemIndex];
+        LogInterface.Add($"Used: {item.itemName}", Color.green);
+        item.Use();
     }
 }
