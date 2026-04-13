@@ -32,6 +32,18 @@ public class PlayerController : MonoBehaviour
     private static int prevLayer = -1;
     private float noClipSpeedMultiplier = 10f;
 
+    [Header("First Person")]
+    public Vector3 fpCameraOffset = new Vector3(0f, 1.7f, 0f);
+    public float fpTransitionDuration = 0.8f;
+    private const KeyCode fpToggleKey = KeyCode.V;
+    private const float fpHoldDuration = 3f;
+
+    public static bool isFirstPersonOn = false;
+    private float fpYaw = 0f;
+    private float fpPitch = 0f;
+    private bool isFPTransitioning = false;
+    private Coroutine fpHoldCoroutine;
+
     [Header("Top-Down Camera")]
     public Vector3 cameraOffset = new Vector3(0f, 20f, -8f);
     public float cameraFollowSpeed = 8f;
@@ -75,10 +87,18 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (playerHealth.isDead) 
+        if (playerHealth.isDead)
         {
             UpdatePeekOffset();
             return;
+        }
+
+        if (Input.GetKeyDown(fpToggleKey))
+            fpHoldCoroutine = StartCoroutine(FPHoldCoroutine());
+        if (Input.GetKeyUp(fpToggleKey) && fpHoldCoroutine != null)
+        {
+            StopCoroutine(fpHoldCoroutine);
+            fpHoldCoroutine = null;
         }
 
         if (canRun && Input.GetKey(KeyCode.LeftShift))
@@ -86,15 +106,32 @@ public class PlayerController : MonoBehaviour
         else if (!Input.GetKey(KeyCode.LeftShift))
             isRunning = false;
 
+        if (isFirstPersonOn)
+        {
+            FirstPersonMove();
+            return;
+        }
+
         Move();
         isPeeking = Input.GetMouseButton(1);
         UpdatePeekOffset();
-        
+
         DrawRay(transform.position, transform.forward * GetDistanceToCursor());
     }
 
     void LateUpdate()
     {
+        if (isFirstPersonOn)
+        {
+            if (!isFPTransitioning)
+            {
+                Transform cam = Camera.main.transform;
+                cam.position = transform.position + fpCameraOffset;
+                cam.rotation = Quaternion.Euler(fpPitch, fpYaw, 0f);
+            }
+            return;
+        }
+
         Vector3 baseTarget = transform.position + cameraOffset;
 
         if (isPeeking)
@@ -319,6 +356,8 @@ public class PlayerController : MonoBehaviour
 
     public void DrawRay(Vector3 start, Vector3 direction)
     {
+        if (isFirstPersonOn) return;
+
         if (!rayLine)
         {
             var rayObject = new GameObject("PlayerRay");
@@ -423,6 +462,119 @@ public class PlayerController : MonoBehaviour
 
         characterController.Move(dir * speed * Time.deltaTime);
         velocity.y = 0f;
+    }
+
+    private IEnumerator FPHoldCoroutine()
+    {
+        yield return new WaitForSeconds(fpHoldDuration);
+        fpHoldCoroutine = null;
+        if (isFirstPersonOn)
+            FirstPersonOff();
+        else
+            FirstPersonOn();
+    }
+
+    public static void FirstPersonOn()
+    {
+        if (Instance == null || isFirstPersonOn) return;
+        isFirstPersonOn = true;
+        Instance.fpYaw = Instance.transform.eulerAngles.y;
+        Instance.fpPitch = 0f;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Instance.StartCoroutine(Instance.FirstPersonTransition(true));
+
+        Destroy(Instance.rayLine);
+    }
+
+    public static void FirstPersonOff()
+    {
+        if (Instance == null || !isFirstPersonOn) return;
+        isFirstPersonOn = false;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Instance.StartCoroutine(Instance.FirstPersonTransition(false));
+    }
+
+    private IEnumerator FirstPersonTransition(bool entering)
+    {
+        isFPTransitioning = true;
+        Transform cam = Camera.main.transform;
+        cam.GetPositionAndRotation(out Vector3 startPos, out Quaternion startRot);
+
+        Vector3 targetPos = entering
+            ? transform.position + fpCameraOffset
+            : transform.position + cameraOffset;
+        Quaternion targetRot = entering
+            ? Quaternion.Euler(0f, fpYaw, 0f)
+            : Quaternion.Euler(cameraTiltX, 0f, 0f);
+
+        float elapsed = 0f;
+        while (elapsed < fpTransitionDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / fpTransitionDuration);
+            cam.SetPositionAndRotation(
+                Vector3.Lerp(startPos, targetPos, t),
+                Quaternion.Slerp(startRot, targetRot, t));
+            yield return null;
+        }
+
+        cam.SetPositionAndRotation(targetPos, targetRot);
+        isFPTransitioning = false;
+    }
+
+    private void FirstPersonMove()
+    {
+        if (!isPlayerMovable) return;
+
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
+        fpYaw += mouseX;
+        fpPitch -= mouseY;
+        fpPitch = Mathf.Clamp(fpPitch, -maxCamY, maxCamY);
+
+        transform.rotation = Quaternion.Euler(0f, fpYaw, 0f);
+
+        isGrounded = characterController.isGrounded;
+        if (isGrounded && velocity.y < 0f)
+            velocity.y = 0f;
+
+        bool moveForward  = Input.GetKey(KeyCode.W);
+        bool moveBackward = Input.GetKey(KeyCode.S);
+        bool moveLeft     = Input.GetKey(KeyCode.A);
+        bool moveRight    = Input.GetKey(KeyCode.D);
+
+        Vector3 dir = Vector3.zero;
+        if (moveForward)  dir += transform.forward;
+        if (moveBackward) dir -= transform.forward;
+        if (moveLeft)     dir -= transform.right;
+        if (moveRight)    dir += transform.right;
+        dir.y = 0f;
+        if (dir.sqrMagnitude > 0f) dir.Normalize();
+
+        float speed = isRunning
+            ? (moveSpeed - Mathf.Max(0, moveSpeedDeBuff)) * 1.5f
+            : (moveSpeed - Mathf.Max(0, moveSpeedDeBuff));
+
+        if (dir.sqrMagnitude > 0f)
+        {
+            characterController.Move(Time.deltaTime * speed * dir);
+            isWalking = true;
+            walkCor ??= StartCoroutine(WalkCoroutine());
+        }
+        else
+        {
+            isWalking = false;
+            isRunning = false;
+        }
+
+        if (!isGrounded)
+        {
+            velocity.y += heavyGravity * Time.deltaTime;
+            characterController.Move(velocity * Time.deltaTime);
+        }
     }
 
     private static void SetLayerRecursively(GameObject obj, int layer)
