@@ -60,6 +60,33 @@ public class EnemyFSM : MonoBehaviour
             candidates[i].ai.InvestigatePoint(position);
     }
 
+    /// Checks if any enemy is within <paramref name="radius"/> units of <paramref name="position"/>.
+    /// If found, logs its name and triggers a global search. Uses sqrMagnitude — no sqrt overhead.
+    public static void CheckClosestEnemy(Vector3 position, float radius)
+    {
+        float sqrRadius = radius * radius;
+        foreach (var et in EnemyType.enemiesList)
+        {
+            if (et.enemy == null) continue;
+            if ((et.enemy.transform.position - position).sqrMagnitude <= sqrRadius)
+            {
+                Debug.Log($"[EnemyFSM] Nearby enemy detected: {et.enemy.gameObject.name}");
+                GlobalPlayerSearch(position);
+                return;
+            }
+        }
+    }
+
+    /// Checks if all enemies are dead. If so, resets FSM to Calm and switches music to stealth.
+    public static void CheckAllCleared()
+    {
+        foreach (var et in EnemyType.enemiesList)
+            if (!et.isDied) return;
+
+        TransitionTo(GlobalState.Calm);
+        if (ControllerOST.Instance != null) ControllerOST.Instance.PlayStealth();
+    }
+
     private static void TransitionTo(GlobalState newState)
     {
         if (CurrentState == newState) return;

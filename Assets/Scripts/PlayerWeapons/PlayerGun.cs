@@ -44,6 +44,7 @@ public abstract class PlayerGun : MonoBehaviour
     protected int bulletPerShot = 1;
     public int bulletSpread = 1;
     protected float nextTimeToFire;
+    public float shotVolumeRadius = 50;
     public GameObject mainProjectilePrefab;
     [Header("Ammunition")]
     public bool isInfiniteAmmo;
@@ -89,7 +90,9 @@ public abstract class PlayerGun : MonoBehaviour
     {
         nextTimeToFire = Time.time + fireRate;
 
-        if (!isSilenced) 
+        if (isSilenced)
+            EnemyFSM.CheckClosestEnemy(transform.position, shotVolumeRadius);
+        else
             EnemyFSM.GlobalPlayerSearch(transform.position);
 
         audioSource.PlayOneShot(shotSound);

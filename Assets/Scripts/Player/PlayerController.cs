@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     private float fpPitch = 0f;
     private bool isFPTransitioning = false;
     private Coroutine fpHoldCoroutine;
+    public static bool isFirstPersonModeAllowed = true;
 
     [Header("Top-Down Camera")]
     public Vector3 cameraOffset = new Vector3(0f, 20f, -8f);
@@ -93,7 +94,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(fpToggleKey))
+        if (Input.GetKeyDown(fpToggleKey) && isFirstPersonModeAllowed)
             fpHoldCoroutine = StartCoroutine(FPHoldCoroutine());
         if (Input.GetKeyUp(fpToggleKey) && fpHoldCoroutine != null)
         {

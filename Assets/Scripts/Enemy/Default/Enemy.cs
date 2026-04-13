@@ -173,6 +173,7 @@ public class Enemy : MonoBehaviour
 
         Destroy(rayObject);
 
+        EnemyFSM.CheckAllCleared();
     }
     public bool TakeDamage(short damage)
     {
