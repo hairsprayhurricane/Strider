@@ -68,6 +68,8 @@ public class EnemyFSM : MonoBehaviour
         foreach (var et in EnemyType.enemiesList)
         {
             if (et.enemy == null) continue;
+            if (et.enemy.isDead) continue;
+            
             if ((et.enemy.transform.position - position).sqrMagnitude <= sqrRadius)
             {
                 Debug.Log($"[EnemyFSM] Nearby enemy detected: {et.enemy.gameObject.name}");
@@ -75,6 +77,35 @@ public class EnemyFSM : MonoBehaviour
                 return;
             }
         }
+    }
+
+    /// Sends ALL non-aggro enemies within <paramref name="radius"/> to investigate <paramref name="position"/>.
+    /// Used for loud gunshots — every enemy in earshot turns toward the source.
+    public static void AlertNearbyEnemies(Vector3 position, float radius)
+    {
+        if (CurrentState == GlobalState.Attack) return;
+
+        float sqrRadius  = radius * radius;
+        bool  anyAlerted = false;
+
+        foreach (var et in EnemyType.enemiesList)
+        {
+            if (et.enemy == null || et.enemy.isDead) continue;
+
+            EnemyAi        ai        = et.enemy.enemyAi;
+            EnemyAwareness awareness = et.enemy.enemyAwareness;
+
+            if (ai == null || (awareness != null && awareness.isAggro)) continue;
+
+            if ((et.enemy.transform.position - position).sqrMagnitude <= sqrRadius)
+            {
+                ai.InvestigatePoint(position);
+                anyAlerted = true;
+            }
+        }
+
+        if (anyAlerted)
+            TransitionTo(GlobalState.Search);
     }
 
     /// Checks if all enemies are dead. If so, resets FSM to Calm and switches music to stealth.

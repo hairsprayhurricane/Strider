@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class ControllerOST : MonoBehaviour
 {
+    public bool mute = false;
     public static bool isPlayingStealth = false;
     public List<AudioClip> stealthModeClips = new List<AudioClip>();
     public List<AudioClip> actonModeClips = new List<AudioClip>();
@@ -25,6 +26,8 @@ public class ControllerOST : MonoBehaviour
     }
     public void PlayStealth()
     {
+        if (mute) return;
+
         if (isPlayingStealth) return;
         isPlayingStealth = true;
         audioSource.clip = stealthModeClips[ClassicRandom.Range(0, stealthModeClips.Count)];
@@ -34,6 +37,8 @@ public class ControllerOST : MonoBehaviour
 
     public void PlayAction()
     {
+        if (mute) return;
+        
         if (!isPlayingStealth) return;
         isPlayingStealth = false;
         audioSource.clip = actonModeClips[ClassicRandom.Range(0, actonModeClips.Count)];

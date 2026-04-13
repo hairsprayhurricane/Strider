@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -64,6 +65,8 @@ public class PlayerController : MonoBehaviour
 
     public PlayerHealth playerHealth;
 
+    private StealthShadowDetector shadowDetector;
+
     private static PlayerController _instance;
     public static PlayerController Instance { get { return _instance; } }
 
@@ -73,6 +76,7 @@ public class PlayerController : MonoBehaviour
             Destroy(this.gameObject);
         else
             _instance = this;
+        shadowDetector = GetComponent<StealthShadowDetector>();
     }
 
     public void Start()
@@ -88,6 +92,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        //Debug.Log(shadowDetector.darknessLevel);
+
         if (playerHealth.isDead)
         {
             UpdatePeekOffset();
@@ -584,4 +590,6 @@ public class PlayerController : MonoBehaviour
         foreach (Transform child in obj.transform)
             SetLayerRecursively(child.gameObject, layer);
     }
+
+    public StealthShadowDetector GetStealthShadowDetector() => shadowDetector;
 }

@@ -37,6 +37,7 @@ public class ShaderVolumeManager : MonoBehaviour
 
     private Color vignetteDefaultColor;
     private Coroutine vignetteColorCoroutine;
+    private float vignetteDefaultIntensity;
 
     private static ShaderVolumeManager _instance;
     public static ShaderVolumeManager Instance { get { return _instance; } }
@@ -82,6 +83,7 @@ public class ShaderVolumeManager : MonoBehaviour
             vignette.active = true;
             vignette.color.overrideState = true;
             vignetteDefaultColor = vignette.color.value;
+            vignetteDefaultIntensity = vignette.intensity.value;
         }
         if (lgg != null)
         {
@@ -183,6 +185,9 @@ public class ShaderVolumeManager : MonoBehaviour
         Color lerpedColor = Color.Lerp(Color.red, Color.black, t);
         vignette.color.value = lerpedColor;
     }
+
+    public void SetVignetteIntensity(float value) => vignette.intensity.value = value;
+    public void SetVignetteDefaultIntensity() => vignette.intensity.value = vignetteDefaultIntensity;
 
     public void SetColorAdjustmentColorByValue(int value)
     {

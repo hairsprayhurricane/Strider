@@ -61,6 +61,7 @@ MonoBehaviour:
       amount: 250
       maxAmount: 1000
   weaponHolder: {fileID: 4462795401737951904}
+  isWeaponHidden: 0
 --- !u!114 &1625625657451953233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,6 +95,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308cfc4fcdc8ca14c8f2a09b20e46056, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
+  currentItemAmount: 0
+  items: []
 --- !u!1 &3305976791415548846
 GameObject:
   m_ObjectHideFlags: 0
@@ -143,6 +146,7 @@ GameObject:
   - component: {fileID: 2992297669358819594}
   - component: {fileID: 1642792127213981550}
   - component: {fileID: 730224398234482465}
+  - component: {fileID: 5109456121452192029}
   m_Layer: 6
   m_Name: Collider
   m_TagString: Player
@@ -294,6 +298,8 @@ MonoBehaviour:
   xRecoilOffset: 0
   yRecoilOffset: 0
   stepSoundClip: {fileID: 0}
+  fpCameraOffset: {x: 0, y: 1.7, z: 0}
+  fpTransitionDuration: 0.8
   cameraOffset: {x: 0, y: 25, z: -5}
   cameraFollowSpeed: 1
   cameraTiltX: 80
@@ -451,6 +457,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5109456121452192029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4420320867310770973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2df827d7d5b2cfa46a1e42de7548337a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  occlusionMask:
+    serializedVersion: 2
+    m_Bits: 4294967291
+  updateEveryNFrames: 3
+  sampleHeight: 0.9
+  smoothSpeed: 111
+  darknessLevel: 0
 --- !u!1 &7032089119408612586
 GameObject:
   m_ObjectHideFlags: 0
@@ -460,7 +485,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5993130955708493928}
-  - component: {fileID: 6212075384027344044}
   - component: {fileID: 3585365521549756544}
   m_Layer: 0
   m_Name: Player
@@ -487,18 +511,6 @@ Transform:
   - {fileID: 4732054695441917717}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6212075384027344044
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7032089119408612586}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 308cfc4fcdc8ca14c8f2a09b20e46056, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
 --- !u!114 &3585365521549756544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -562,7 +574,7 @@ Camera:
   m_GameObject: {fileID: 7811518372566895802}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
