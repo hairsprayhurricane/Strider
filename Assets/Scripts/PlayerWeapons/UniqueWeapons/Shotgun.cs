@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Shotgun : PlayerGun
 {
-    public override void Fire()
+    public override void FireAction()
     {
         Vector3 spawnPos = playerPos.position;
         Vector3 baseDir = playerPos.forward;
@@ -17,7 +17,6 @@ public class Shotgun : PlayerGun
             Projectile.Spawn(mainProjectilePrefab, spawnPos, spawnRot, gameObject);
         }
 
-        AfterFire();
     }
 
     private Vector3 CalculateSpreadDirection(Vector3 baseDir)

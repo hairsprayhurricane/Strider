@@ -28,7 +28,7 @@ public class Thunderbolt : PlayerGun
         return "-";
     }
 
-    public override void Fire()
+    public override void FireAction()
     {
         Vector3 spawnPos = playerPos.position;
         Vector3 baseDir = playerPos.forward;
@@ -53,7 +53,6 @@ public class Thunderbolt : PlayerGun
             (Quaternion.AngleAxis(angle, spreadAxis) * baseDir).normalized;
 
         SpawnLightning(spawnPos, offsetDir);
-        AfterFire();
     }
 
     void SpawnLightning(Vector3 startPos, Vector3 direction)

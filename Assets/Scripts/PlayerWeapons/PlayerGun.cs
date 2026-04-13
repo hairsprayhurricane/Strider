@@ -82,11 +82,16 @@ public abstract class PlayerGun : MonoBehaviour
         }
     }
 
-    public abstract void Fire();
+    private void Fire()
+    {
+        FireAction();
+        AfterFire();   
+    }
     public abstract string GetDescription();
     public abstract string GetGunName();
 
-    public void AfterFire()
+    public abstract void FireAction();
+    private void AfterFire()
     {
         nextTimeToFire = Time.time + fireRate;
 

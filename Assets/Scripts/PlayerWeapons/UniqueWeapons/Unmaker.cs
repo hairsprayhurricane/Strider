@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Unmaker : PlayerGun
 {
-    public override void Fire()
+    public override void FireAction()
     {
         audioSource.Stop();
         //audioSource.PlayOneShot(shotSound);
@@ -37,7 +37,6 @@ public class Unmaker : PlayerGun
         //LeadProjectile bullet = bulletObj.GetComponent<LeadProjectile>();
         //bullet.damage = damage;
 
-        AfterFire();
     }
 
     public override string GetDescription()

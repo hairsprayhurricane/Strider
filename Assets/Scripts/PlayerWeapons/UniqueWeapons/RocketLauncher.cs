@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class RocketLauncher : PlayerGun
 {
-    public override void Fire()
+    public override void FireAction()
     {
         audioSource.Stop();
         //audioSource.PlayOneShot(shotSound);
@@ -35,7 +35,6 @@ public class RocketLauncher : PlayerGun
 
         Projectile.Spawn(mainProjectilePrefab, spawnPos, spawnRot, gameObject);
 
-        AfterFire();
     }
 
     public override string GetDescription()

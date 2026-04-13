@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BFG : PlayerGun
 {
-    public override void Fire()
+    public override void FireAction()
     {
         audioSource.Stop();
         //audioSource.PlayOneShot(shotSound);
@@ -36,8 +36,6 @@ public class BFG : PlayerGun
         GameObject bulletObj = Instantiate(mainProjectilePrefab, spawnPos, spawnRot);
         //LeadProjectile bullet = bulletObj.GetComponent<LeadProjectile>();
         //bullet.damage = damage;
-
-        AfterFire();
     }
 
     public override string GetDescription()

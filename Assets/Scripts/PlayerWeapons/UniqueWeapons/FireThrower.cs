@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class FireThrower : PlayerGun
 {
-    public override void Fire()
+    public override void FireAction()
     {
         audioSource.Stop();
         //audioSource.PlayOneShot(shotSound);
@@ -34,8 +34,6 @@ public class FireThrower : PlayerGun
         Quaternion spawnRot = Quaternion.LookRotation(offsetDir);
 
         Projectile.Spawn(mainProjectilePrefab, spawnPos, spawnRot, gameObject, damage);
-
-        AfterFire();
     }
 
     public override string GetDescription()
