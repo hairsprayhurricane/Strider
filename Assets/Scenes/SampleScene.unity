@@ -3373,9 +3373,53 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4025539685717089561, guid: 140d10ce3bef95d4490bd62d081477da, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: a03447c05dbcdf04d8e0aa095a318bfb, type: 2}
+    - target: {fileID: 4025539685717089561, guid: 140d10ce3bef95d4490bd62d081477da, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 1568268901670737777, guid: a03447c05dbcdf04d8e0aa095a318bfb, type: 2}
+    - target: {fileID: 4025539685717089561, guid: 140d10ce3bef95d4490bd62d081477da, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4291038701757584948, guid: 140d10ce3bef95d4490bd62d081477da, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5930604277277586211, guid: 140d10ce3bef95d4490bd62d081477da, type: 3}
       propertyPath: m_Name
       value: PlayerUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 8427507364515945955, guid: 140d10ce3bef95d4490bd62d081477da, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8427507364515945955, guid: 140d10ce3bef95d4490bd62d081477da, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8427507364515945955, guid: 140d10ce3bef95d4490bd62d081477da, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8427507364515945955, guid: 140d10ce3bef95d4490bd62d081477da, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8427507364515945955, guid: 140d10ce3bef95d4490bd62d081477da, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -360
+      objectReference: {fileID: 0}
+    - target: {fileID: 8427507364515945955, guid: 140d10ce3bef95d4490bd62d081477da, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -240
+      objectReference: {fileID: 0}
+    - target: {fileID: 8434166166505350053, guid: 140d10ce3bef95d4490bd62d081477da, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
