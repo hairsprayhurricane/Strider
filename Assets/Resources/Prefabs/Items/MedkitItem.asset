@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc73efb44b85382839f7e04b2a6f2f4c, type: 3}
   m_Name: MedkitItem
   m_EditorClassIdentifier: Assembly-CSharp::MedkitItem
-  itemName: Unknown Item
-  itemIcon: {fileID: 0}
+  itemName: Medkit
+  itemIcon: {fileID: 21300000, guid: 82cd18185e7115e419b6dc0358593848, type: 3}
   itemDescription: Synth blood shit
   idInInventory: 0
+  model: {fileID: 0}

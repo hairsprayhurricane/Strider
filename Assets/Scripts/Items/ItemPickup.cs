@@ -13,7 +13,9 @@ public class ItemPickup : MonoBehaviour
     [Header("Pickup Sound")]
     public AudioClip pickupSound;
 
-    private bool  playerNearby = false;
+    // Счётчик коллайдеров игрока в зоне (несколько коллайдеров на персонаже)
+    private int  playerInRange = 0;
+    private bool picked        = false;
     private float startY;
 
     void Start()
@@ -23,32 +25,37 @@ public class ItemPickup : MonoBehaviour
 
     void Update()
     {
-        // Парящая анимация
         float y = startY + Mathf.Sin(Time.time * bobSpeed) * bobHeight;
         transform.position = new Vector3(transform.position.x, y, transform.position.z);
         transform.Rotate(Vector3.up, spinSpeed * Time.deltaTime, Space.World);
 
-        // Подбор по нажатию E
-        if (playerNearby && Input.GetKeyDown(KeyCode.E))
+        if (playerInRange > 0 && Input.GetKeyDown(KeyCode.E))
             TryPickup();
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
-        playerNearby = true;
-        LogInterface.Add($"[E] {item.itemName}", Color.white);
+        if (playerInRange == 0)
+            LogInterface.Add($"[E] {item.itemName}", Color.white);
+        playerInRange++;
     }
 
     void OnTriggerExit(Collider other)
     {
         if (!other.CompareTag("Player")) return;
-        playerNearby = false;
+        playerInRange = Mathf.Max(0, playerInRange - 1);
     }
 
     void TryPickup()
     {
+        if (picked) return;
         if (!PlayerInventory.Instance.AddItem(item)) return;
+
+        picked  = true;
+        enabled = false; // останавливаем Update до Destroy
+
+        CanvasSelectorController.Instance?.OnItemPickedUp();
 
         if (pickupSound != null)
             AudioSource.PlayClipAtPoint(pickupSound, transform.position);
