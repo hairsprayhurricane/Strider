@@ -9,6 +9,7 @@ public class ShaderVolumeManager : MonoBehaviour
     private Vignette vignette;
     private LiftGammaGain lgg;
     private float gainOffsetDefaultValue;
+    private float gammaOffsetDefaultValue;
     private ChromaticAberration chromaticAberration;
     private float chromaticAberrationDefaultIntensity;
     private BleedingColors bleedingColors;
@@ -88,6 +89,7 @@ public class ShaderVolumeManager : MonoBehaviour
         if (lgg != null)
         {
             gainOffsetDefaultValue = lgg.gain.value.w;
+            gammaOffsetDefaultValue = lgg.gamma.value.w;
         }
         if (chromaticAberration != null)
         {
@@ -780,4 +782,33 @@ public class ShaderVolumeManager : MonoBehaviour
     {
         exposure.compensation.value = exposureCompensationDefaultValue;
     }*/
+
+    public void TriggerGammaFlash(float maxGamma, float duration)
+    {
+        StartCoroutine(GammaFlashCoroutine(maxGamma, duration));
+    }
+
+    private IEnumerator GammaFlashCoroutine(float maxGamma, float duration)
+    {
+        if (lgg == null) yield break;
+
+        Vector4 gamma = lgg.gamma.value;
+        float defaultGamma = gammaOffsetDefaultValue;
+
+        gamma.w = maxGamma;
+        lgg.gamma.value = gamma;
+
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float k = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / duration));
+            gamma.w = Mathf.Lerp(maxGamma, defaultGamma, k);
+            lgg.gamma.value = gamma;
+            yield return null;
+        }
+
+        gamma.w = defaultGamma;
+        lgg.gamma.value = gamma;
+    }
 }

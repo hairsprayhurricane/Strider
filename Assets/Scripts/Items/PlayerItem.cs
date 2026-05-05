@@ -2,6 +2,8 @@ using UnityEngine;
 
 public abstract class PlayerItem : ScriptableObject
 {
+        public MeshRenderer model;
+
     [Header("Info")]
     public string itemName = "Unknown Item";
     public Sprite itemIcon;

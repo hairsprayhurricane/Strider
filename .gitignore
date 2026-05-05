@@ -10,3 +10,7 @@ Assembly-CSharp.csproj
 /UserSettings
 
 Assembly-CSharp-Editor.csproj
+
+# Unity generated csproj files
+*.csproj
+*.sln
