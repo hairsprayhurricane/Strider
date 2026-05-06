@@ -104,7 +104,20 @@ public class CanvasSelectorController : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.F) && !isOpen && !isAltMode)
-            QuickUseItem();
+        {
+            var inv = PlayerInventory.Instance;
+            if (inv != null && inv.HasItems)
+            {
+                int idx  = Mathf.Clamp(selectedItemIndex, 0, inv.items.Count - 1);
+                PlayerItem item = inv.items[idx];
+                if (item.isThrowable)
+                    ThrowableItemHandler.Instance.BeginAiming(item);
+                else
+                    QuickUseItem();
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.F) && !isOpen && !isAltMode)
+            ThrowableItemHandler.Instance.OnKeyUp();
 
         if (isOpen)
         {

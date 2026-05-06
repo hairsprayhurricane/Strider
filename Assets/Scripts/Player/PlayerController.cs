@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour
     private static int noClipLayer = -1;
     private static int prevLayer = -1;
     private float noClipSpeedMultiplier = 10f;
+    public bool hideRay = false;
 
     [Header("First Person")]
     public Vector3 fpCameraOffset = new Vector3(0f, 1.7f, 0f);
@@ -354,37 +355,67 @@ public class PlayerController : MonoBehaviour
 
     public void OnDeath()
     {
-        Destroy(rayLine.gameObject);
+        if (rayLine) Destroy(rayLine.gameObject);
         isPeeking = false;
         UpdatePeekOffset();
         ControllerOST.Instance.Stop();
         ShakeCamera(magnitude:10);
     }
 
+    private void EnsureRayLine()
+    {
+        if (rayLine) return;
+        var go = new GameObject("PlayerRay");
+        go.transform.SetParent(transform);
+        rayLine = go.AddComponent<LineRenderer>();
+        rayLine.startWidth  = rayLine.endWidth = 0.05f;
+        rayLine.material    = new Material(Shader.Find("Sprites/Default"));
+        rayLine.useWorldSpace = true;
+    }
+
     public void DrawRay(Vector3 start, Vector3 direction)
     {
         if (isFirstPersonOn) return;
+        if (hideRay) return;
 
-        if (!rayLine)
-        {
-            var rayObject = new GameObject("PlayerRay");
-            rayObject.transform.SetParent(transform);
-            rayLine = rayObject.AddComponent<LineRenderer>();
-
-            rayLine.positionCount = 2;
-
-            rayLine.startWidth = 0.05f;
-            rayLine.endWidth = 0.05f;
-            rayLine.material = new Material(Shader.Find("Sprites/Default"));
-
-            var color = Color.blue;
-            rayLine.startColor = color;
-            color.a = 0f;
-            rayLine.endColor = color;
-        }
-
+        EnsureRayLine();
+        rayLine.positionCount = 2;
+        rayLine.startColor    = Color.blue;
+        var c = Color.blue; c.a = 0f;
+        rayLine.endColor      = c;
+        rayLine.enabled       = true;
         rayLine.SetPosition(0, start);
         rayLine.SetPosition(1, start + direction);
+    }
+
+    public void DrawThrowArc(Vector3 start, Vector3 launchVel, float gravity)
+    {
+        if (isFirstPersonOn) return;
+        EnsureRayLine();
+
+        const int   steps = 32;
+        const float dt    = 0.07f;
+
+        rayLine.positionCount = steps;
+        rayLine.startColor    = new Color(1f, 0.6f, 0f, 1f);
+        rayLine.endColor      = new Color(1f, 0.6f, 0f, 0f);
+        rayLine.enabled       = true;
+
+        for (int i = 0; i < steps; i++)
+        {
+            float t = i * dt;
+            rayLine.SetPosition(i, start + launchVel * t + 0.5f * gravity * t * t * Vector3.up);
+        }
+    }
+
+    public void RestoreRay()
+    {
+        hideRay = false;
+        if (!rayLine) return;
+        rayLine.positionCount = 2;
+        var c = Color.blue; c.a = 0f;
+        rayLine.startColor    = Color.blue;
+        rayLine.endColor      = c;
     }
 
     public float GetDistanceToCursor()

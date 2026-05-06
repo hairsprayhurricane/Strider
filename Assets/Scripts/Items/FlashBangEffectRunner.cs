@@ -5,21 +5,30 @@ public class FlashBangEffectRunner : MonoBehaviour
 {
     public void Begin(int lightCount, float radius, float maxLightIntensity,
         float fadeDuration, float maxGamma, float gammaDuration, float delay,
-        float smokeSize, Color smokeColor)
+        float smokeSize, Color smokeColor,
+        float enemyStunRadius, float enemyStunDuration, Vector3 spawnPosition)
     {
         StartCoroutine(Run(lightCount, radius, maxLightIntensity, fadeDuration,
-            maxGamma, gammaDuration, delay, smokeSize, smokeColor));
+            maxGamma, gammaDuration, delay, smokeSize, smokeColor,
+            enemyStunRadius, enemyStunDuration, spawnPosition));
     }
 
     private IEnumerator Run(int lightCount, float radius, float maxIntensity,
         float fadeDuration, float maxGamma, float gammaDuration, float delay,
-        float smokeSize, Color smokeColor)
+        float smokeSize, Color smokeColor,
+        float enemyStunRadius, float enemyStunDuration, Vector3 spawnPosition)
     {
         yield return new WaitForSeconds(delay);
 
-        Vector3 center = PlayerController.Instance != null
-            ? PlayerController.Instance.transform.position
-            : Vector3.zero;
+        Vector3 center = spawnPosition;
+
+        Collider[] stunBuffer = new Collider[32];
+        int hitCount = Physics.OverlapSphereNonAlloc(center, enemyStunRadius, stunBuffer);
+        for (int s = 0; s < hitCount; s++)
+        {
+            if (stunBuffer[s].TryGetComponent(out EnemyAi enemyAi))
+                enemyAi.Stun(enemyStunDuration);
+        }
 
         for (int i = 0; i < lightCount; i++)
         {

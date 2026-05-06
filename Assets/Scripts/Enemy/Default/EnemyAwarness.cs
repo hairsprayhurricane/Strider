@@ -14,6 +14,9 @@ public class EnemyAwareness : MonoBehaviour
     public bool playerVisible = false;
     protected static Transform playersTransform;
     public List<EnemyAwareness> nearbyEnemies = new List<EnemyAwareness>();
+    public bool isStunned;
+    private Coroutine awarenessCoroutine;
+    private Coroutine stunCoroutine;
 
     private const float spotTime = 1f;
     private static float spotElapsedTime = 0f;
@@ -55,7 +58,7 @@ public class EnemyAwareness : MonoBehaviour
             playersTransform = PlayerController.Instance.transform;
         }
         playerStealthShadowDetector = PlayerController.Instance.GetStealthShadowDetector();
-        StartCoroutine(CheckAwareness());
+        awarenessCoroutine = StartCoroutine(CheckAwareness());
     }
 
     public async Task GetNearbyEnemies(float maxDistance)
@@ -98,6 +101,22 @@ public class EnemyAwareness : MonoBehaviour
     {
         while (!isAggro)
         {
+            if (isStunned)
+            {
+                playerVisible = false;
+                yield return new WaitForEndOfFrame();
+                continue;
+            }
+
+            // Дым блокирует обнаружение, если игрок в дыму, а враг — нет
+            if (SmokeGrenadeEffectRunner.IsPositionInSmoke(playersTransform.position) &&
+                !SmokeGrenadeEffectRunner.IsPositionInSmoke(transform.position))
+            {
+                playerVisible = false;
+                yield return new WaitForEndOfFrame();
+                continue;
+            }
+
             playerVisible = false;
 
             float darkness  = playerStealthShadowDetector.darknessLevel;
@@ -243,5 +262,32 @@ public class EnemyAwareness : MonoBehaviour
     public float GetPlayerShadowDebuff()
     {
         return GetShadowSpeedFactor(playerStealthShadowDetector.darknessLevel);
+    }
+
+    public void Stun(float duration)
+    {
+        if (stunCoroutine != null) StopCoroutine(stunCoroutine);
+        stunCoroutine = StartCoroutine(StunCoroutine(duration));
+    }
+
+    private IEnumerator StunCoroutine(float duration)
+    {
+        isStunned = true;
+        playerVisible = false;
+        yield return new WaitForSeconds(duration);
+        isStunned = false;
+        stunCoroutine = null;
+    }
+
+    public void DeAggro()
+    {
+        isAggro = false;
+        playerVisible = false;
+        spotElapsedTime = 0f;
+        lostSightTime = 0f;
+        SyncSpotNoise(0f);
+        if (awarenessCoroutine != null) StopCoroutine(awarenessCoroutine);
+        awarenessCoroutine = StartCoroutine(CheckAwareness());
+        EnemyFSM.CheckAllDeAggro();
     }
 }

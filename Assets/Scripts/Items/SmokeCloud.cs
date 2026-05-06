@@ -10,12 +10,16 @@ public class SmokeCloud : MonoBehaviour
     public float size            = 2f;
     public Color cloudColor      = new Color(0.82f, 0.82f, 0.82f, 1f);
 
+    public float growDuration = 0f;
+
     private Material[] _materials;
+
+    public bool persistent = false;
 
     public static SmokeCloud Spawn(Vector3 position, float size = 2f, float fadeOutDuration = 1f, Color? color = null)
     {
         foreach (var existing in FindObjectsByType<SmokeCloud>(FindObjectsSortMode.None))
-            Destroy(existing.gameObject);
+            if (!existing.persistent) Destroy(existing.gameObject);
 
         var go = new GameObject("SmokeCloud");
         go.transform.position = position;
@@ -74,6 +78,21 @@ public class SmokeCloud : MonoBehaviour
         }
 
         StartCoroutine(CloudLifetime());
+        if (growDuration > 0f)
+        {
+            transform.localScale = Vector3.one * 0.05f;
+            StartCoroutine(GrowCoroutine());
+        }
+    }
+
+    private IEnumerator GrowCoroutine()
+    {
+        for (float t = 0f; t < growDuration; t += Time.deltaTime)
+        {
+            transform.localScale = Vector3.one * Mathf.Lerp(0.05f, 1f, t / growDuration);
+            yield return null;
+        }
+        transform.localScale = Vector3.one;
     }
 
     private IEnumerator CloudLifetime()

@@ -11,16 +11,18 @@ public abstract class PlayerItem : ScriptableObject
 
     [HideInInspector] public int idInInventory = 0;
 
-    public void Use()
-    {
-        Action();
-        AfterAction();
-    }
+    [Header("Throw")]
+    public bool  isThrowable  = false;
+    public float throwSpeed   = 15f;
+    public float throwGravity = -25f;
+
+    public void Use() { Action(); Consume(); }
+
+    public void UseAtPoint(Vector3 point) { ActionAtPoint(point); Consume(); }
 
     public abstract void Action();
 
-    private void AfterAction()
-    {
-        PlayerInventory.Instance.RemoveItem(this);
-    }
+    public virtual void ActionAtPoint(Vector3 point) { Action(); }
+
+    public void Consume() { PlayerInventory.Instance.RemoveItem(this); }
 }

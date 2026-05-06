@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 382fa081c74ddc84a98f429af2757f50, type: 3}
+  m_Name: SmokeGrenadeItem
+  m_EditorClassIdentifier: Assembly-CSharp::SmokeGrenadeItem
+  model: {fileID: 0}
+  itemName: Unknown Item
+  itemIcon: {fileID: 21300000, guid: 5808a08c241e42e4f8f0b46f53c3aeaa, type: 3}
+  itemDescription: 
+  idInInventory: 0
+  isThrowable: 1
+  throwSpeed: 15
+  throwGravity: -25
+  cloudCount: 8
+  smokeRadius: 10
+  smokeSize: 3
+  smokeColor: {r: 0.55, g: 0.55, b: 0.55, a: 1}
+  duration: 10

@@ -42,7 +42,7 @@ public class EnemyGun : MonoBehaviour
 
     public virtual void Update()
     {
-        if (enemyAi.isPlayerSpotted && !enemyAi.isMeleeAttacking && enemyAi.enemyAwareness.isAggro)
+        if (enemyAi.isPlayerSpotted && !enemyAi.isMeleeAttacking && !enemyAi.isStunned && !enemyAi.isSmokeConfused && enemyAi.enemyAwareness.isAggro)
         {
             Collider playerCollider = FindPlayerCollider();
             if (playerCollider != null

@@ -108,6 +108,19 @@ public class EnemyFSM : MonoBehaviour
             TransitionTo(GlobalState.Search);
     }
 
+    /// Checks if all alive enemies lost the player. If so, transitions to Search and plays stealth music.
+    public static void CheckAllDeAggro()
+    {
+        foreach (var et in EnemyType.enemiesList)
+        {
+            if (et.isDied || et.enemy == null) continue;
+            if (et.enemy.enemyAwareness != null && et.enemy.enemyAwareness.isAggro) return;
+        }
+
+        TransitionTo(GlobalState.Search);
+        if (ControllerOST.Instance != null) ControllerOST.Instance.PlayStealth();
+    }
+
     /// Checks if all enemies are dead. If so, resets FSM to Calm and switches music to stealth.
     public static void CheckAllCleared()
     {

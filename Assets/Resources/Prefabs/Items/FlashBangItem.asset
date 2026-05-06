@@ -16,7 +16,10 @@ MonoBehaviour:
   itemName: Flash
   itemIcon: {fileID: 21300000, guid: 1b395689428617e4f8713f66ef004988, type: 3}
   itemDescription: 
-  idInInventory: 1
+  idInInventory: 3
+  isThrowable: 1
+  throwSpeed: 15
+  throwGravity: -25
   lightCount: 6
   lightRadius: 3
   maxLightIntensity: 15
@@ -25,4 +28,6 @@ MonoBehaviour:
   gammaDuration: 1.5
   smokeSize: 2.5
   smokeColor: {r: 0.82, g: 0.82, b: 0.82, a: 1}
-  delay: 0.5
+  delay: 0
+  enemyStunRadius: 10
+  enemyStunDuration: 5

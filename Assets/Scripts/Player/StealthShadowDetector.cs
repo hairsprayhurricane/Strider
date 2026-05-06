@@ -13,7 +13,8 @@ public class StealthShadowDetector : MonoBehaviour
     public float smoothSpeed = 111f;
 
     [Header("State (read-only)")]
-    [Range(0f, 1f)] public float darknessLevel;    // 1 = полная тень, 0 = полный свет
+    [Range(0f, 1f)] public float darknessLevel;      // 1 = полная тень, 0 = полный свет
+    [Range(0f, 1f)] public float forcedDarknessLevel; // устанавливается внешне (дым и т.п.), плавно работает
     Light _mainLight;
     Light[] _additionalLights;
     int _frameCounter;
@@ -38,7 +39,14 @@ public class StealthShadowDetector : MonoBehaviour
 
     void Update()
     {
-        ShaderVolumeManager.Instance.SetVignetteIntensity(darknessLevel/2);
+        if (forcedDarknessLevel >= 1f)
+        {
+            darknessLevel = 1f;
+            ShaderVolumeManager.Instance.SetVignetteIntensity(0.5f);
+            return;
+        }
+
+        ShaderVolumeManager.Instance.SetVignetteIntensity(darknessLevel / 2);
 
         _lightsRefreshFrame++;
         if (_lightsRefreshFrame >= LightsRefreshInterval)
@@ -97,7 +105,7 @@ public class StealthShadowDetector : MonoBehaviour
             rawDarkness -= contrib;
         }
 
-        float target = Mathf.Clamp01(rawDarkness);
+        float target = Mathf.Max(Mathf.Clamp01(rawDarkness), forcedDarknessLevel);
         darknessLevel = Mathf.Clamp01(Mathf.Lerp(darknessLevel, target, Time.deltaTime * smoothSpeed));
     }
 

@@ -41,6 +41,15 @@ public class EnemyAi : MonoBehaviour
     private Coroutine stopWalkCoroutine;
     private Coroutine patrolCoroutine;
     private Coroutine investigateCoroutine;
+    private Coroutine stunCoroutine;
+    private Coroutine lookAroundCoroutine;
+
+    public bool isStunned;
+    public bool isSmokeConfused;
+    private bool hasLastKnownPos;
+    private bool isLookingAround;
+    private Vector3 lastKnownPlayerPos;
+    private Coroutine smokeWanderCoroutine;
 
     private float patrolRadius = 20f;
     private List<Vector3> patrolPoints = new List<Vector3>();
@@ -141,7 +150,7 @@ public class EnemyAi : MonoBehaviour
 
     private void AggroBehavior()
     {
-        if (isMeleeAttacking) return;
+        if (isMeleeAttacking || isStunned || isLookingAround || isSmokeConfused) return;
 
         if (isStatic && enemyNavMeshAgent != null)
         {
@@ -152,6 +161,9 @@ public class EnemyAi : MonoBehaviour
 
         if (CheckIsInSight())
         {
+            lastKnownPlayerPos = playersTransform.position;
+            hasLastKnownPos = true;
+
             StopChasing();
             isMovingToPlayer = false;
 
@@ -187,14 +199,25 @@ public class EnemyAi : MonoBehaviour
 
             if (CheckIsInSight())
             {
+                lastKnownPlayerPos = playersTransform.position;
+                hasLastKnownPos = true;
                 isMovingToPlayer = false;
                 break;
             }
 
-            float dist = Vector3.Distance(transform.position, playersTransform.position);
-            enemyNavMeshAgent.speed = dist >= 50f ? maxSpeed : minSpeed;
+            Vector3 target = hasLastKnownPos ? lastKnownPlayerPos : playersTransform.position;
+            float distToTarget = Vector3.Distance(transform.position, target);
+
+            if (distToTarget <= enemyNavMeshAgent.stoppingDistance + 1.5f)
+            {
+                isMovingToPlayer = false;
+                StartLookAround();
+                break;
+            }
+
+            enemyNavMeshAgent.speed = distToTarget >= 50f ? maxSpeed : minSpeed;
             enemyNavMeshAgent.isStopped = false;
-            enemyNavMeshAgent.SetDestination(playersTransform.position);
+            enemyNavMeshAgent.SetDestination(target);
 
             yield return new WaitForSeconds(pathUpdateInterval);
         }
@@ -382,6 +405,13 @@ public class EnemyAi : MonoBehaviour
     {
         if (playersTransform == null) return false;
 
+        if (SmokeGrenadeEffectRunner.IsPositionInSmoke(playersTransform.position) &&
+            !SmokeGrenadeEffectRunner.IsPositionInSmoke(transform.position))
+        {
+            isInSight = false;
+            return false;
+        }
+
         Vector3 origin = transform.position + Vector3.up;
         Vector3 toPlayer = playersTransform.position - origin;
 
@@ -512,6 +542,190 @@ public class EnemyAi : MonoBehaviour
         {
             isMovingToPlayer = true;
             chaseCoroutine = StartCoroutine(ChasePlayer());
+        }
+    }
+
+    public void Stun(float duration)
+    {
+        if (stunCoroutine != null) StopCoroutine(stunCoroutine);
+        stunCoroutine = StartCoroutine(StunCoroutine(duration));
+        if (enemyAwareness != null) enemyAwareness.Stun(duration);
+        if (enemyGun != null)
+        {
+            enemyGun.StopAllCoroutines();
+            enemyGun.isReadyToShoot = false;
+        }
+    }
+
+    private IEnumerator StunCoroutine(float duration)
+    {
+        isStunned = true;
+        StopLookAround();
+        StopSmokeWander();
+        StopWandering();
+        StopChasing();
+
+        if (enemyNavMeshAgent != null)
+        {
+            enemyNavMeshAgent.isStopped = true;
+            enemyNavMeshAgent.speed = 0f;
+        }
+        isMovingToPlayer = false;
+        isMeleeAttacking = false;
+
+        yield return new WaitForSeconds(duration);
+
+        isStunned = false;
+        if (enemyGun != null) enemyGun.isReadyToShoot = true;
+
+        if (enemyNavMeshAgent != null && !isStatic)
+        {
+            enemyNavMeshAgent.isStopped = false;
+            enemyNavMeshAgent.speed = baseEnemySpeed;
+        }
+        stunCoroutine = null;
+    }
+
+    private void StartLookAround()
+    {
+        if (lookAroundCoroutine != null) StopCoroutine(lookAroundCoroutine);
+        lookAroundCoroutine = StartCoroutine(LookAroundCoroutine());
+    }
+
+    private void StopLookAround()
+    {
+        if (lookAroundCoroutine == null) return;
+        StopCoroutine(lookAroundCoroutine);
+        lookAroundCoroutine = null;
+        isLookingAround = false;
+    }
+
+    private bool HasLineOfSightToPlayer()
+    {
+        if (playersTransform == null) return false;
+        if (SmokeGrenadeEffectRunner.IsPositionInSmoke(playersTransform.position) &&
+            !SmokeGrenadeEffectRunner.IsPositionInSmoke(transform.position))
+            return false;
+        Vector3 origin = transform.position + Vector3.up;
+        Vector3 toPlayer = playersTransform.position - origin;
+        return !Physics.Raycast(origin, toPlayer.normalized, toPlayer.magnitude, environmentMask);
+    }
+
+    public void WanderInArea(Vector3 center, float radius, float duration)
+    {
+        if (smokeWanderCoroutine != null) StopCoroutine(smokeWanderCoroutine);
+        smokeWanderCoroutine = StartCoroutine(SmokeWanderCoroutine(center, radius, duration));
+    }
+
+    private void StopSmokeWander()
+    {
+        if (smokeWanderCoroutine == null) return;
+        StopCoroutine(smokeWanderCoroutine);
+        smokeWanderCoroutine = null;
+        isSmokeConfused = false;
+    }
+
+    private IEnumerator SmokeWanderCoroutine(Vector3 center, float radius, float duration)
+    {
+        isSmokeConfused = true;
+        bool wasAggro = enemyAwareness != null && enemyAwareness.isAggro;
+
+        StopPatrol();
+        StopWandering();
+        StopChasing();
+        StopInvestigate();
+
+        if (enemyNavMeshAgent != null && !isStatic)
+        {
+            enemyNavMeshAgent.isStopped = false;
+            enemyNavMeshAgent.speed = baseEnemySpeed * 0.6f;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            if (isStunned) { yield return new WaitUntil(() => !isStunned); }
+
+            Vector3 offset = ClassicRandom.insideUnitSphere * radius * 0.8f;
+            offset.y = 0f;
+            Vector3 target = center + offset;
+
+            if (NavMesh.SamplePosition(target, out NavMeshHit hit, radius * 2f, NavMesh.AllAreas))
+                enemyNavMeshAgent.SetDestination(hit.position);
+
+            float wait = ClassicRandom.Range(1f, 2.2f);
+            elapsed += wait;
+            yield return new WaitForSeconds(wait);
+        }
+
+        isSmokeConfused = false;
+        smokeWanderCoroutine = null;
+
+        if (enemyNavMeshAgent != null && !isStatic)
+            enemyNavMeshAgent.speed = baseEnemySpeed;
+
+        if (wasAggro || (enemyAwareness != null && enemyAwareness.isAggro))
+        {
+            isMovingToPlayer = true;
+            chaseCoroutine = StartCoroutine(ChasePlayer());
+        }
+        else if (seekAtStart && !isStatic)
+        {
+            StartPatrol();
+        }
+    }
+
+    private IEnumerator LookAroundCoroutine()
+    {
+        isLookingAround = true;
+        bool foundPlayer = false;
+
+        if (enemyNavMeshAgent != null)
+            enemyNavMeshAgent.isStopped = true;
+
+        int lookCount = ClassicRandom.Range(3, 6);
+        for (int i = 0; i < lookCount; i++)
+        {
+            if (HasLineOfSightToPlayer())
+            {
+                lastKnownPlayerPos = playersTransform.position;
+                hasLastKnownPos = true;
+                foundPlayer = true;
+                break;
+            }
+
+            float randomAngle = ClassicRandom.Range(0f, 360f);
+            Vector3 randomDir = new Vector3(
+                Mathf.Sin(randomAngle * Mathf.Deg2Rad), 0f,
+                Mathf.Cos(randomAngle * Mathf.Deg2Rad));
+            Quaternion targetRot = Quaternion.LookRotation(randomDir);
+
+            float elapsed = 0f;
+            const float rotDuration = 0.4f;
+            Quaternion startRot = transform.rotation;
+            while (elapsed < rotDuration)
+            {
+                elapsed += Time.deltaTime;
+                transform.rotation = Quaternion.Slerp(startRot, targetRot, elapsed / rotDuration);
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(ClassicRandom.Range(0.3f, 0.7f));
+        }
+
+        isLookingAround = false;
+        lookAroundCoroutine = null;
+
+        if (foundPlayer)
+        {
+            if (enemyNavMeshAgent != null && !isStatic)
+                enemyNavMeshAgent.isStopped = false;
+        }
+        else
+        {
+            hasLastKnownPos = false;
+            if (enemyAwareness != null)
+                enemyAwareness.DeAggro();
         }
     }
 }

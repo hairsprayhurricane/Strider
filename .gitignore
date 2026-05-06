@@ -14,3 +14,4 @@ Assembly-CSharp-Editor.csproj
 # Unity generated csproj files
 *.csproj
 *.sln
+.claude/settings.local.json
