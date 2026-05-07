@@ -37,6 +37,13 @@ public class EnemyAwareness : MonoBehaviour
     private const float DEEP_SHADOW_CLOSE_RANGE    = 6f;   // до 3 ед. — видят почти вплотную
     private const float DEEP_SHADOW_ACCUM_SPEED    = 4f;   // spotTime=1 / 2 = 0.5 сек
 
+    // --- Search-режим: видят игрока в полной тьме медленнее средней ---
+    private const float SEARCH_DARKNESS_THRESHOLD    = 0.9f;
+    private const float SEARCH_DARKNESS_ACCUM_SPEED  = 0.7f;  // ~1.4с в полной тьме
+
+    // --- Расследование: полная тьма, ~1с ---
+    private const float INVESTIGATE_DARKNESS_ACCUM_SPEED = 1.0f;
+
     // При любом уровне тени, но прямо перед противником и близко:
     private const float NARROW_CLOSE_RANGE         = 5f;   // "короткое расстояние"
     private const float NARROW_CLOSE_ACCUM_SPEED   = 1f;   // ровно 1 секунда
@@ -46,10 +53,14 @@ public class EnemyAwareness : MonoBehaviour
     private const float PROXIMITY_RANGE            = 3f;   // в пределах 3 ед.
     private const float PROXIMITY_ACCUM_SPEED      = 1f;   // ровно 1 секунда
 
+    private float _projCheckTimer = 0f;
+    private const float PROJ_CHECK_INTERVAL = 0.5f;
+
     private static AudioSource spotNoise;
     public AudioClip spotSound;
 
     private StealthShadowDetector playerStealthShadowDetector;
+    private EnemyAi _enemyAi;
 
     void Start()
     {
@@ -58,6 +69,7 @@ public class EnemyAwareness : MonoBehaviour
             playersTransform = PlayerController.Instance.transform;
         }
         playerStealthShadowDetector = PlayerController.Instance.GetStealthShadowDetector();
+        _enemyAi = GetComponent<EnemyAi>();
         awarenessCoroutine = StartCoroutine(CheckAwareness());
     }
 
@@ -125,8 +137,12 @@ public class EnemyAwareness : MonoBehaviour
             float distance  = Mathf.Sqrt(sqrDist);
             float angle     = Vector3.Angle(transform.forward, toPlayer);
 
-            bool deepShadow  = darkness >= SHADOW_INVISIBLE_THRESHOLD;
-            bool inNarrowFov = angle < NARROW_FOV_HALF_ANGLE;
+            bool deepShadow        = darkness >= SHADOW_INVISIBLE_THRESHOLD;
+            bool inNarrowFov       = angle < NARROW_FOV_HALF_ANGLE;
+            bool inSearchMode      = EnemyFSM.CurrentState == EnemyFSM.GlobalState.Search;
+            bool isInvestigating   = _enemyAi != null && _enemyAi.IsInvestigating;
+            bool searchDarkVis     = inSearchMode    && darkness >= SEARCH_DARKNESS_THRESHOLD;
+            bool investigateDarkVis = isInvestigating && darkness >= SEARCH_DARKNESS_THRESHOLD;
 
             // Режим 1: близость — без проверки угла, спереди или сзади, 1 сек
             bool proximityDetect = distance <= PROXIMITY_RANGE;
@@ -143,13 +159,22 @@ public class EnemyAwareness : MonoBehaviour
                                   && distance <= NARROW_CLOSE_RANGE
                                   && inNarrowFov;
 
-            // Режим 4: нормальный FOV — только если не в глубокой тени
+            // Режим 4: нормальный FOV — в обычном режиме не видят в глубокой тени;
+            //          в Search-режиме видят при тьме > 0.9, очень медленно
             bool normalDetect = !proximityDetect
-                             && !deepShadow
+                             && (!deepShadow || searchDarkVis)
                              && sqrDist < awarenessRadius * awarenessRadius
                              && angle < fieldOfView / 2f;
 
-            if (proximityDetect || deepShadowDetect || narrowCloseDetect || normalDetect)
+            // Режим 5: расследование — идёт к источнику звука, видит в полной тьме
+            //          через обычный FOV, достаточно просто попасть в поле зрения
+            bool investigateDetect = !proximityDetect
+                                  && !normalDetect
+                                  && investigateDarkVis
+                                  && sqrDist < awarenessRadius * awarenessRadius
+                                  && angle < fieldOfView / 2f;
+
+            if (proximityDetect || deepShadowDetect || narrowCloseDetect || normalDetect || investigateDetect)
             {
                 RaycastHit hit;
                 if (Physics.Raycast(transform.position, toPlayer.normalized, out hit, awarenessRadius))
@@ -160,26 +185,41 @@ public class EnemyAwareness : MonoBehaviour
 
                         if (proximityDetect)
                         {
-                            // 1 секунда, угол не важен
                             accumSpeed = PROXIMITY_ACCUM_SPEED;
                         }
                         else if (deepShadowDetect)
                         {
-                            // 0.5 секунды, без учёта дистанции
                             accumSpeed = DEEP_SHADOW_ACCUM_SPEED;
                         }
                         else if (narrowCloseDetect)
                         {
-                            // Ровно 1 секунда, теневой штраф не применяется
                             accumSpeed = NARROW_CLOSE_ACCUM_SPEED;
+                        }
+                        else if (investigateDetect)
+                        {
+                            // Расследует звук — видит в темноте через FOV, медленно
+                            accumSpeed = INVESTIGATE_DARKNESS_ACCUM_SPEED;
                         }
                         else
                         {
-                            // Нормальное обнаружение: чем ближе — тем быстрее,
-                            // плюс штраф от тьмы
                             float distanceFactor = 1f - Mathf.Clamp01(distance / awarenessRadius);
-                            float shadowFactor   = GetShadowSpeedFactor(darkness);
-                            accumSpeed = Mathf.Lerp(0.3f, 2f, distanceFactor) * shadowFactor;
+
+                            if (searchDarkVis)
+                            {
+                                // Полная тьма в Search: медленнее средней, но заметно (~1.4с)
+                                accumSpeed = SEARCH_DARKNESS_ACCUM_SPEED;
+                            }
+                            else if (inSearchMode)
+                            {
+                                // Поиск, не полная тьма: штраф тени снимается,
+                                // средняя дистанция → Lerp(1,3,0.5) = 2 → ровно 0.5с
+                                accumSpeed = Mathf.Lerp(1f, 3f, distanceFactor);
+                            }
+                            else
+                            {
+                                float shadowFactor = GetShadowSpeedFactor(darkness);
+                                accumSpeed = Mathf.Lerp(0.3f, 2f, distanceFactor) * shadowFactor;
+                            }
                         }
 
                         playerVisible = true;
@@ -209,6 +249,13 @@ public class EnemyAwareness : MonoBehaviour
                     spotElapsedTime  = Mathf.Max(spotElapsedTime, 0f);
                     SyncSpotNoise(spotElapsedTime);
                 }
+            }
+
+            _projCheckTimer += Time.deltaTime;
+            if (_projCheckTimer >= PROJ_CHECK_INTERVAL)
+            {
+                _projCheckTimer = 0f;
+                CheckVisibleProjectiles();
             }
 
             yield return new WaitForEndOfFrame();
@@ -283,11 +330,54 @@ public class EnemyAwareness : MonoBehaviour
     {
         isAggro = false;
         playerVisible = false;
-        spotElapsedTime = 0f;
-        lostSightTime = 0f;
-        SyncSpotNoise(0f);
+        lostSightTime = 0f; // перезапуск таймера спада; spotElapsedTime убывает сам через lostSightThreshold
+        SyncSpotNoise(spotElapsedTime);
         if (awarenessCoroutine != null) StopCoroutine(awarenessCoroutine);
         awarenessCoroutine = StartCoroutine(CheckAwareness());
         EnemyFSM.CheckAllDeAggro();
+    }
+
+    // ── Projectile visual detection ───────────────────────────────────────────
+
+    private void CheckVisibleProjectiles()
+    {
+        if (isAggro || _enemyAi == null) return;
+
+        var bullets = Projectile.bulletRegister;
+        for (int i = bullets.Count - 1; i >= 0; i--)
+        {
+            Projectile p = bullets[i];
+            if (p == null || !p.isShootedByPlayer) continue;
+            if (IsProjectileVisible(p.transform.position, p.launchOrigin, _enemyAi)) return;
+        }
+
+        var throwables = ThrowableProjectile.activeList;
+        for (int i = throwables.Count - 1; i >= 0; i--)
+        {
+            ThrowableProjectile tp = throwables[i];
+            if (tp == null) continue;
+            if (IsProjectileVisible(tp.transform.position, tp.launchOrigin, _enemyAi)) return;
+        }
+    }
+
+    private bool IsProjectileVisible(Vector3 projPos, Vector3 launchOrigin, EnemyAi ai)
+    {
+        Vector3 toProj = projPos - transform.position;
+        float   dist   = toProj.magnitude;
+
+        if (dist > awarenessRadius) return false;
+        if (Vector3.Angle(transform.forward, toProj) >= fieldOfView / 2f) return false;
+
+        if (SmokeGrenadeEffectRunner.IsPositionInSmoke(projPos) &&
+            !SmokeGrenadeEffectRunner.IsPositionInSmoke(transform.position))
+            return false;
+
+        if (Physics.Raycast(transform.position, toProj.normalized, dist,
+                LayerMask.GetMask("Default", "Environment")))
+            return false;
+
+        EnemyFSM.GlobalPlayerSearch();
+        ai.InvestigatePoint(launchOrigin);
+        return true;
     }
 }

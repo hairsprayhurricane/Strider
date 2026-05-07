@@ -37,6 +37,12 @@ public class ThrowableItemHandler : MonoBehaviour
         PlayerController.Instance.hideRay = true;
     }
 
+    public void CancelAiming()
+    {
+        if (!_isAiming) return;
+        EndAiming();
+    }
+
     // Called by CanvasSelectorController on GetKeyUp(F)
     public void OnKeyUp()
     {
@@ -73,15 +79,24 @@ public class ThrowableItemHandler : MonoBehaviour
         go.transform.position   = start;
         go.transform.localScale = Vector3.one * 0.3f;
 
-        // Ignore collision with player
+        // Add Rigidbody manually BEFORE ThrowableProjectile so RequireComponent
+        // finds it already configured — prevents first-frame gravity drop and
+        // premature OnCollisionEnter underground.
+        var rb = go.AddComponent<Rigidbody>();
+        rb.useGravity             = false;
+        rb.linearVelocity         = vel;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        rb.interpolation          = RigidbodyInterpolation.Interpolate;
+
         Physics.IgnoreCollision(
             go.GetComponent<Collider>(),
             PlayerController.Instance.GetComponent<Collider>());
 
-        var proj              = go.AddComponent<ThrowableProjectile>();
-        proj.item             = _currentItem;
-        proj.gravity          = _currentItem.throwGravity;
-        proj.initialVelocity  = vel;
+        var proj             = go.AddComponent<ThrowableProjectile>();
+        proj.item            = _currentItem;
+        proj.gravity         = _currentItem.throwGravity;
+        proj.initialVelocity = vel;
+        proj.launchOrigin    = start;
     }
 
     private void EndAiming()
@@ -95,7 +110,7 @@ public class ThrowableItemHandler : MonoBehaviour
     private Vector3 GetAimWorldPosition()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Plane ground = new Plane(Vector3.up, Vector3.zero);
+        Plane ground = new(Vector3.up, Vector3.zero);
         if (ground.Raycast(ray, out float dist))
             return ray.GetPoint(dist);
         // fallback: forward from player
@@ -111,7 +126,7 @@ public class ThrowableItemHandler : MonoBehaviour
         float   g          = _currentItem.throwGravity; // negative
 
         Vector3 toTarget   = target - start;
-        Vector3 horizontal = new Vector3(toTarget.x, 0f, toTarget.z);
+        Vector3 horizontal = new(toTarget.x, 0f, toTarget.z);
         float   hDist      = horizontal.magnitude;
         float   vDist      = toTarget.y;
 

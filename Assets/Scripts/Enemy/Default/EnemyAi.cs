@@ -438,6 +438,46 @@ public class EnemyAi : MonoBehaviour
         return false;
     }
 
+    public bool IsInvestigating => investigateCoroutine != null;
+
+    // ── Projectile awareness ──────────────────────────────────────────────────
+
+    private static readonly Collider[] _proximityBuffer = new Collider[16];
+    private Coroutine _projectileAlertCoroutine;
+
+    /// <summary>
+    /// Called by projectiles passing nearby. Notifies all enemies within radius.
+    /// Uses a single static buffer — always called from the main thread.
+    /// </summary>
+    public static void NotifyEnemiesNear(Vector3 position, Vector3 launchOrigin, float radius)
+    {
+        int count = Physics.OverlapSphereNonAlloc(position, radius, _proximityBuffer);
+        for (int i = 0; i < count; i++)
+        {
+            EnemyAi ai = _proximityBuffer[i].GetComponent<EnemyAi>();
+            if (ai == null) continue;
+            if (ai.enemyAwareness != null && ai.enemyAwareness.isAggro) continue;
+            ai.AlertFromProjectile(launchOrigin);
+        }
+    }
+
+    /// <summary>Latest projectile wins: cancels any pending delayed search.</summary>
+    public void AlertFromProjectile(Vector3 launchOrigin)
+    {
+        if (_projectileAlertCoroutine != null)
+            StopCoroutine(_projectileAlertCoroutine);
+        _projectileAlertCoroutine = StartCoroutine(DelayedProjectileAlert(launchOrigin));
+    }
+
+    private IEnumerator DelayedProjectileAlert(Vector3 launchOrigin)
+    {
+        yield return new WaitForSeconds(3f);
+        _projectileAlertCoroutine = null;
+        if (enemyAwareness != null && enemyAwareness.isAggro) yield break;
+        EnemyFSM.GlobalPlayerSearch();
+        InvestigatePoint(launchOrigin);
+    }
+
     // ── Public API ────────────────────────────────────────────────────────────
 
     public void InvestigatePoint(Vector3 point)
@@ -480,7 +520,12 @@ public class EnemyAi : MonoBehaviour
         if (enemyAwareness != null && enemyAwareness.isAggro) yield break;
 
         if (seekAtStart && !isStatic)
-            StartPatrol();
+        {
+            float resumeSpeed = EnemyFSM.CurrentState == EnemyFSM.GlobalState.Search
+                ? baseEnemySpeed
+                : calmSpeed;
+            StartPatrol(resumeSpeed);
+        }
     }
 
     public void ResetPathForNav()

@@ -19,6 +19,7 @@ public abstract class Projectile : MonoBehaviour
     public float speed;
     public bool isShootedByPlayer = false;
     [HideInInspector] public Vector3 direction;
+    [HideInInspector] public Vector3 launchOrigin;
 
     public int prefabNumber;
 
@@ -59,8 +60,9 @@ public abstract class Projectile : MonoBehaviour
     public static Projectile Spawn(GameObject prefab, Vector3 pos, Quaternion rot, GameObject owner, short damage = default, bool stealthGun = false)
     {
         var p = Instantiate(prefab, pos, rot).GetComponent<Projectile>();
-        p.summoner = owner;
+        p.summoner      = owner;
         p.isStealthShot = stealthGun;
+        p.launchOrigin  = pos;
         bulletRegister.Add(p);
         if (damage != default) p.damage = damage;
         return p;
@@ -80,8 +82,11 @@ public abstract class Projectile : MonoBehaviour
         if (Physics.Linecast(lastPosition, currentPosition, out RaycastHit hit, bulletLayerMask))
         {
             HandleHit(hit);
-            return; 
+            return;
         }
+
+        if (isShootedByPlayer)
+            EnemyAi.NotifyEnemiesNear(currentPosition, launchOrigin, 3f);
 
         ControlSmokeBeam(currentPosition);
         transform.position = currentPosition;

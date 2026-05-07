@@ -119,6 +119,51 @@ public class CanvasSelectorController : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.F) && !isOpen && !isAltMode)
             ThrowableItemHandler.Instance.OnKeyUp();
 
+        // F + 1–9 while aiming: switch item on the fly without triggering weapon switch
+        bool fItemSwitched = false;
+        if (Input.GetKey(KeyCode.F) && !isOpen && !isAltMode)
+        {
+            for (int k = 0; k < 9; k++)
+            {
+                if (Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha1 + k)))
+                {
+                    var inv = PlayerInventory.Instance;
+                    if (inv != null && k < inv.items.Count)
+                    {
+                        selectedItemIndex = k;
+                        UpdateItemSelection();
+                        PlayerItem newItem = inv.items[k];
+                        if (newItem.isThrowable)
+                            ThrowableItemHandler.Instance.BeginAiming(newItem);
+                        else
+                        {
+                            ThrowableItemHandler.Instance.CancelAiming();
+                            QuickUseItem();
+                        }
+                    }
+                    fItemSwitched = true;
+                    break;
+                }
+            }
+        }
+
+        if (isAltMode && Input.GetKeyDown(KeyCode.F))
+        {
+            var inv = PlayerInventory.Instance;
+            if (inv != null && inv.HasItems)
+            {
+                int idx = Mathf.Clamp(selectedItemIndex, 0, inv.items.Count - 1);
+                PlayerItem item = inv.items[idx];
+                if (item.isThrowable)
+                    ThrowableItemHandler.Instance.BeginAiming(item);
+                else
+                    QuickUseItem();
+            }
+            CloseAltMode();
+        }
+        if (isAltMode && Input.GetKeyUp(KeyCode.F))
+            ThrowableItemHandler.Instance.OnKeyUp();
+
         if (isOpen)
         {
             if (Input.GetKeyDown(KeyCode.LeftBracket))  SelectItemDelta(-1);
@@ -126,7 +171,7 @@ public class CanvasSelectorController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.F))            UseSelectedItem();
         }
 
-        // Alt+1-9: быстрое использование предмета по индексу
+        // Alt+1-9: выбор предмета по индексу (без использования)
         bool altItemUsed = false;
         if (isAltMode)
         {
@@ -134,16 +179,20 @@ public class CanvasSelectorController : MonoBehaviour
             {
                 if (Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha1 + k)))
                 {
-                    UseItemAt(k);
-                    CloseAltMode();
+                    var inv = PlayerInventory.Instance;
+                    if (inv != null && k < inv.items.Count)
+                    {
+                        selectedItemIndex = k;
+                        UpdateItemSelection();
+                    }
                     altItemUsed = true;
                     break;
                 }
             }
         }
 
-        // Переключение оружий 1-9 блокируется в Alt-режиме и если предмет уже использован
-        if (!isAltMode && !altItemUsed)
+        // Переключение оружий 1-9 блокируется в Alt-режиме, если предмет уже использован, или при зажатом F
+        if (!isAltMode && !altItemUsed && !fItemSwitched)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchWeapon(1);
             if (Input.GetKeyDown(KeyCode.Alpha2)) SwitchWeapon(2);
@@ -532,13 +581,6 @@ public class CanvasSelectorController : MonoBehaviour
         }
     }
 
-    void UseItemAt(int index)
-    {
-        var inv = PlayerInventory.Instance;
-        if (inv == null || index >= inv.items.Count) return;
-        inv.items[index].Use();
-    }
-
     IEnumerator SlideInSimple(VisualElement panel, SlideDirection dir)
     {
         Vector2 from = OffscreenOffset(dir);
@@ -750,7 +792,7 @@ public class CanvasSelectorController : MonoBehaviour
                 var inv = PlayerInventory.Instance;
                 if (inv == null || captured >= inv.items.Count) return;
                 selectedItemIndex = captured;
-                UseSelectedItem();
+                UpdateItemSelection();
             });
         }
 
@@ -1022,12 +1064,12 @@ public class CanvasSelectorController : MonoBehaviour
 
         (string key, string action)[] rows =
         {
-            ("TAB",       "Open-Close Inventory"),
-            ("Q",         "Items menu (Hold)"),
-            ("Q + 1–9",   "Use Item"),
-            ("F",         "Use First Item"),
-            ("1–9 OR SCROLL",       "Change Weapon"),
-            ("LMC + drag",  "Change Item Position"),
+            ("TAB",           "Open-Close Inventory"),
+            ("Q",             "Items menu (Hold)"),
+            ("Q + 1–9 / LMC", "Select Item"),
+            ("F",             "Use Selected Item"),
+            ("1–9 OR SCROLL", "Change Weapon"),
+            ("LMC + drag",    "Change Item Position"),
         };
 
         foreach (var (key, action) in rows)
